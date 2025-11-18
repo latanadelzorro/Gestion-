@@ -182,17 +182,34 @@
 
         /* Texto dentro de la ruleta */
         .wheel-segment {
-            position: absolute; top: 0; left: 50%;
-            width: 2px; height: 50%;
-            transform-origin: bottom center;
-            display: flex; justify-content: center; padding-top: 20px;
-        }
+    position: absolute; 
+    top: 0; 
+    left: 50%;
+    width: 2px; 
+    height: 50%;
+    /* LA CLAVE: Esto centra el eje exactamente */
+    margin-left: -1px; 
+    transform-origin: bottom center;
+    /* Quitamos el padding para controlar mejor la posición del texto abajo */
+    padding: 0;
+    pointer-events: none; /* Evita que el texto bloquee clicks */
+}
         .segment-text {
-            transform: translateX(-50%) rotate(90deg); /* Orientar texto hacia fuera */
-            font-weight: bold; font-size: 0.8rem; white-space: nowrap;
-            color: white; text-shadow: 1px 1px 2px black;
-            display: flex; align-items: center; gap: 5px;
-        }
+    position: absolute;
+    top: 25px; /* Ajusta esto para alejarlo/acercarlo al borde */
+    left: 50%;
+    /* Centrado horizontal exacto + rotación */
+    transform: translateX(-50%) rotate(90deg);
+    
+    font-weight: 800; 
+    font-size: 0.95rem; /* Un pelín más grande */
+    white-space: nowrap;
+    color: white; 
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.6); /* Sombra para que se lea bien sobre amarillo */
+    display: flex; 
+    align-items: center; 
+    gap: 5px;
+}
         
         /* Posicionamiento de los 8 textos */
         .seg-1 { transform: rotate(22.5deg); }  /* 15% */
