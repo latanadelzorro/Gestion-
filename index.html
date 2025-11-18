@@ -115,90 +115,139 @@
         .info-wrapper { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
         .cat-tag-small { font-size: 0.7rem; text-transform: uppercase; color: #aaa; font-weight: bold; letter-spacing: 0.5px; margin-top: auto; }
 
-        /* --- RULETA (Botón y Modal) --- */
+        /* --- MODAL RULETA PRO --- */
         .float-wheel-btn {
             position: fixed; bottom: 100px; right: 20px;
-            width: 60px; height: 60px;
-            background: linear-gradient(45deg, #ff5252, #f48fb1);
+            width: 65px; height: 65px;
+            background: linear-gradient(135deg, #FFD700, #FF8C00);
+            border: 3px solid white;
             border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
-            font-size: 2rem; box-shadow: 0 5px 20px rgba(255, 82, 82, 0.4);
+            font-size: 2.2rem; box-shadow: 0 5px 25px rgba(255, 140, 0, 0.6);
             cursor: pointer; z-index: 800;
-            animation: bounce 2s infinite;
+            animation: wiggle 3s infinite;
         }
         .float-wheel-btn.hidden { display: none; }
 
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
+        @keyframes wiggle { 0%, 7% {transform: rotateZ(0);} 15% {transform: rotateZ(-15deg);} 20% {transform: rotateZ(10deg);} 25% {transform: rotateZ(-10deg);} 30% {transform: rotateZ(6deg);} 35%, 100% {transform: rotateZ(0);} }
 
-        /* Modal Ruleta */
         .wheel-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 2000;
+            background: rgba(0,0,0,0.85); z-index: 2000;
             display: none; justify-content: center; align-items: center;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
         }
-        .wheel-container {
-            background: white; padding: 30px; border-radius: 20px;
-            text-align: center; position: relative; width: 90%; max-width: 400px;
-            overflow: hidden;
+        
+        /* Contenedor con Luces */
+        .wheel-outer-ring {
+            background: #cc3333;
+            padding: 15px;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            border: 4px solid #fff;
         }
+        /* Bombillas (efecto visual con borde punteado) */
+        .wheel-outer-ring::before {
+            content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border-radius: 50%; border: 4px dashed #FFD700;
+            pointer-events: none;
+        }
+
         .wheel-wrapper {
-            width: 250px; height: 250px; margin: 0 auto 20px;
+            width: 300px; height: 300px;
             position: relative; border-radius: 50%;
-            border: 8px solid #333;
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            border: 6px solid #2c2c2c;
+            background: white;
         }
+
         .the-wheel {
             width: 100%; height: 100%;
             border-radius: 50%;
+            /* 8 Segmentos: 360 / 8 = 45deg cada uno */
             background: conic-gradient(
-                #FFD700 0deg 90deg,   /* 15% - Oro */
-                #ff6b6b 90deg 180deg, /* Casi - Rojo */
-                #4ecdc4 180deg 270deg, /* 10% - Turquesa */
-                #a8e6cf 270deg 360deg  /* 5% - Verde Claro */
+                #FFD700 0deg 45deg,    /* 1 */
+                #ff4757 45deg 90deg,   /* 2 */
+                #2ed573 90deg 135deg,  /* 3 */
+                #1e90ff 135deg 180deg, /* 4 */
+                #FFD700 180deg 225deg, /* 5 */
+                #ff4757 225deg 270deg, /* 6 */
+                #2ed573 270deg 315deg, /* 7 */
+                #1e90ff 315deg 360deg  /* 8 */
             );
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1); /* Giro suave */
             position: relative;
         }
-        
-        /* Líneas divisorias y textos dentro de la ruleta (simplificado visualmente) */
-        .wheel-text {
-            position: absolute; top: 50%; left: 50%;
-            transform-origin: 0 0; width: 50%; height: 2px;
+
+        /* Texto dentro de la ruleta */
+        .wheel-segment {
+            position: absolute; top: 0; left: 50%;
+            width: 2px; height: 50%;
+            transform-origin: bottom center;
+            display: flex; justify-content: center; padding-top: 20px;
         }
-        .wt-1 { transform: rotate(45deg) translate(20px); color: #964B00; font-weight: bold; }
-        .wt-2 { transform: rotate(135deg) translate(20px); color: white; font-weight: bold; }
-        .wt-3 { transform: rotate(225deg) translate(20px); color: #333; font-weight: bold; }
-        .wt-4 { transform: rotate(315deg) translate(20px); color: #333; font-weight: bold; }
+        .segment-text {
+            transform: translateX(-50%) rotate(90deg); /* Orientar texto hacia fuera */
+            font-weight: bold; font-size: 0.8rem; white-space: nowrap;
+            color: white; text-shadow: 1px 1px 2px black;
+            display: flex; align-items: center; gap: 5px;
+        }
+        
+        /* Posicionamiento de los 8 textos */
+        .seg-1 { transform: rotate(22.5deg); }  /* 15% */
+        .seg-2 { transform: rotate(67.5deg); }  /* Casi */
+        .seg-3 { transform: rotate(112.5deg); } /* 10% */
+        .seg-4 { transform: rotate(157.5deg); } /* 5% */
+        .seg-5 { transform: rotate(202.5deg); } /* 15% */
+        .seg-6 { transform: rotate(247.5deg); } /* Casi */
+        .seg-7 { transform: rotate(292.5deg); } /* 10% */
+        .seg-8 { transform: rotate(337.5deg); } /* 5% */
 
         .wheel-pointer {
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 25px solid #333;
-            z-index: 10;
+            position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+            width: 40px; height: 50px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232c2c2c"><path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"/></svg>'); /* Triangulo simple */
+            z-index: 10; filter: drop-shadow(0 4px 2px rgba(0,0,0,0.3));
         }
+        
+        .wheel-center {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 50px; height: 50px; background: white; border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); border: 4px solid #2c2c2c;
+            z-index: 5;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.5rem;
+        }
+
+        .modal-content { position: relative; text-align: center; color: white; }
         
         .btn-spin {
-            background: var(--dark); color: white; padding: 12px 30px;
-            border: none; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-top: 30px;
+            background: #FFD700; color: #333; padding: 15px 40px;
+            border: none; border-radius: 50px; font-size: 1.3rem; font-weight: 800; cursor: pointer;
+            box-shadow: 0 0 20px #FFD700;
+            transition: transform 0.2s;
+            text-transform: uppercase; letter-spacing: 2px;
         }
-        .btn-spin:disabled { background: #ccc; transform: none; }
+        .btn-spin:active { transform: scale(0.95); }
+        .btn-spin:disabled { background: #ccc; box-shadow: none; color: #666; }
         
-        .close-wheel { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; border: none; background: none; cursor: pointer; }
+        .close-wheel { 
+            position: absolute; top: -40px; right: 0; 
+            font-size: 2rem; color: white; background: none; border: none; cursor: pointer; 
+        }
 
         /* Banner de descuento en el carrito */
         .cart-promo-banner {
-            background: linear-gradient(45deg, #D4AF37, #F3E5AB);
-            padding: 12px; border-radius: 10px; margin-bottom: 15px;
-            display: flex; align-items: center; gap: 10px; color: #5e4003;
-            font-weight: bold; font-size: 0.9rem;
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            padding: 15px; border-radius: 12px; margin-bottom: 15px;
+            display: flex; align-items: center; gap: 15px; color: white;
+            font-weight: bold; font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.4);
             animation: slideDown 0.5s ease;
         }
-        .cart-promo-banner i { font-size: 1.2rem; }
+        .cart-promo-banner i { font-size: 1.5rem; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 50%; }
 
         /* --- NAV & UI --- */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; height: var(--nav-height); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 500; border-top-left-radius: 20px; border-top-right-radius: 20px; }
@@ -287,25 +336,41 @@
         <div class="product-grid" id="grid"></div>
     </div>
 
-    <!-- RULETA FLOTANTE -->
+    <!-- RULETA FLOTANTE (Icono regalo animado) -->
     <div class="float-wheel-btn" id="wheel-trigger" onclick="openWheel()">
         🎁
     </div>
 
-    <!-- MODAL RULETA -->
+    <!-- MODAL RULETA PRO -->
     <div class="wheel-modal" id="wheel-modal">
-        <div class="wheel-container">
+        <div class="modal-content">
             <button class="close-wheel" onclick="closeWheel()">&times;</button>
-            <h3 style="margin-bottom:20px;">¡Prueba tu Suerte!</h3>
-            <p style="font-size:0.9rem; color:#666; margin-bottom:20px;">Gira para ganar un código de descuento exclusivo.</p>
+            <h2 style="color:#FFD700; text-shadow:0 2px 10px rgba(0,0,0,0.5);">¡Prueba tu Suerte!</h2>
+            <p style="margin-bottom:20px; opacity:0.9;">Gira la ruleta y gana descuentos exclusivos.</p>
             
-            <div class="wheel-wrapper">
-                <div class="wheel-pointer"></div>
-                <div class="the-wheel" id="the-wheel"></div>
+            <!-- Contenedor Ruleta con Luces -->
+            <div style="display:flex; justify-content:center;">
+                <div class="wheel-outer-ring">
+                    <div class="wheel-pointer"></div> <!-- Flecha arriba -->
+                    <div class="wheel-wrapper">
+                        <div class="the-wheel" id="the-wheel">
+                            <!-- 8 Segmentos visuales -->
+                            <div class="wheel-segment seg-1"><div class="segment-text">15%</div></div>
+                            <div class="wheel-segment seg-2"><div class="segment-text">CASI 🥺</div></div>
+                            <div class="wheel-segment seg-3"><div class="segment-text">10%</div></div>
+                            <div class="wheel-segment seg-4"><div class="segment-text">5%</div></div>
+                            <div class="wheel-segment seg-5"><div class="segment-text">15%</div></div>
+                            <div class="wheel-segment seg-6"><div class="segment-text">CASI 🥺</div></div>
+                            <div class="wheel-segment seg-7"><div class="segment-text">10%</div></div>
+                            <div class="wheel-segment seg-8"><div class="segment-text">5%</div></div>
+                            <div class="wheel-center">🦊</div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div id="result-area">
-                <button class="btn-spin" id="btn-spin" onclick="spinWheel()">¡GIRAR!</button>
+                <button class="btn-spin" id="btn-spin" onclick="spinWheel()">¡GIRAR AHORA!</button>
             </div>
         </div>
     </div>
@@ -371,40 +436,38 @@
 
         let cart = JSON.parse(localStorage.getItem('zorro_cart_v2')) || {};
         
-        // --- RULETA LOGICA ---
-        // Premios definidos por ángulos
-        // 0-90 (Amarillo): NAP15
-        // 90-180 (Rojo): CASI
-        // 180-270 (Turquesa): NAP10
-        // 270-360 (Verde): NAP5
+        // --- RULETA LOGICA (8 SEGMENTOS) ---
+        // Segmentos de 45 grados cada uno (360 / 8)
+        // La flecha está arriba (visual 0deg). La ruleta gira CW.
+        // El ángulo final determina qué segmento está en el TOP (flecha).
+        // Indice 0 es el primer trozo.
         const prizes = [
-            { id: 'NAP15', label: '15% Dto - NAP15', min: 0, max: 90 },
-            { id: 'CASI', label: 'Casi Casi 🔄', min: 90, max: 180 },
-            { id: 'NAP10', label: '10% Dto - NAP10', min: 180, max: 270 },
-            { id: 'NAP5', label: '5% Dto - NAP5', min: 270, max: 360 }
+            { id: 'NAP15', label: '15% Dto - NAP15', color: '#FFD700' },  // Seg 1 (0-45)
+            { id: 'CASI', label: 'Casi Casi... 🥺', color: '#ff4757' },   // Seg 2 (45-90)
+            { id: 'NAP10', label: '10% Dto - NAP10', color: '#2ed573' },  // Seg 3 (90-135)
+            { id: 'NAP5', label: '5% Dto - NAP5', color: '#1e90ff' },     // Seg 4 (135-180)
+            { id: 'NAP15', label: '15% Dto - NAP15', color: '#FFD700' },  // Seg 5 (180-225)
+            { id: 'CASI', label: 'Casi Casi... 🥺', color: '#ff4757' },   // Seg 6 (225-270)
+            { id: 'NAP10', label: '10% Dto - NAP10', color: '#2ed573' },  // Seg 7 (270-315)
+            { id: 'NAP5', label: '5% Dto - NAP5', color: '#1e90ff' }      // Seg 8 (315-360)
         ];
 
         // Estado de la ruleta
-        let storedCode = localStorage.getItem('zorro_promo_code'); // Guardamos el código ganado
-        let hasSpun = localStorage.getItem('zorro_has_spun'); // Guardamos si ya tiró
+        let storedCode = localStorage.getItem('zorro_promo_code');
+        let hasSpun = localStorage.getItem('zorro_has_spun');
 
         function checkWheelState() {
             const btn = document.getElementById('wheel-trigger');
             if (hasSpun === 'true') {
-                btn.classList.add('hidden'); // Si ya tiró, ocultar botón
+                btn.classList.add('hidden'); 
                 if (storedCode && storedCode !== 'CASI') {
-                    showPromoInCart(storedCode); // Si ganó, mostrar en carrito
+                    showPromoInCart(storedCode);
                 }
             }
         }
 
-        function openWheel() {
-            document.getElementById('wheel-modal').style.display = 'flex';
-        }
-
-        function closeWheel() {
-            document.getElementById('wheel-modal').style.display = 'none';
-        }
+        function openWheel() { document.getElementById('wheel-modal').style.display = 'flex'; }
+        function closeWheel() { document.getElementById('wheel-modal').style.display = 'none'; }
 
         function spinWheel() {
             if(hasSpun === 'true') return;
@@ -413,27 +476,26 @@
             btn.disabled = true;
             btn.innerText = "Girando...";
 
-            // Determinar resultado aleatorio
-            // Truco: Hacemos que 'Casi' sea un poco menos probable para que sea divertido, o totalmente random.
-            // Vamos a hacerlo totalmente random 0-360.
-            // Pero ajustamos la rotación final para que la flecha (arriba) apunte al segmento correcto.
-            // La flecha está en top (0deg visualmente, pero en CSS rotate 0 es 12h).
-            // Como la ruleta gira CLOCKWISE, para que un segmento caiga en la flecha:
-            // Final Rotation = 360 * Vueltas + (360 - AnguloDeseado)
+            // Elegimos un premio al azar
+            const winnerIndex = Math.floor(Math.random() * prizes.length);
+            const winner = prizes[winnerIndex];
+
+            // Calculamos el angulo.
+            // Para que el segmento X quede arriba, la ruleta debe girar:
+            // 360 * vueltas - (angulo_del_segmento)
+            // Centro del segmento: (Index * 45) + 22.5
             
-            const randomDeg = Math.floor(Math.random() * 360); 
-            const spins = 5; // Vueltas completas
-            const totalDeg = (spins * 360) + (360 - randomDeg); 
+            const segmentAngle = (winnerIndex * 45) + 22.5; 
+            const spins = 5; // Vueltas
+            // Invertimos el ángulo porque CSS rotate es Clockwise
+            const finalRotate = (360 * spins) - segmentAngle; 
 
-            document.getElementById('the-wheel').style.transform = `rotate(${totalDeg}deg)`;
-
-            // Calcular ganador basado en randomDeg
-            // randomDeg es donde "cae" la flecha relativo al inicio del disco.
-            let winner = prizes.find(p => randomDeg >= p.min && randomDeg < p.max);
+            const wheel = document.getElementById('the-wheel');
+            wheel.style.transform = `rotate(${finalRotate}deg)`;
 
             setTimeout(() => {
                 finishSpin(winner);
-            }, 4000); // Duración de la transición CSS
+            }, 5000); // Coincide con CSS transition
         }
 
         function finishSpin(winner) {
@@ -443,41 +505,45 @@
             const resDiv = document.getElementById('result-area');
             
             if (winner.id === 'CASI') {
-                resDiv.innerHTML = `<h3>¡Oooh! Casi...</h3><p>Inténtalo en tu próxima visita.</p>`;
+                resDiv.innerHTML = `<h3 style="color:#ff4757">¡Oooh! Casi...</h3><p>Hoy no hubo suerte, pero prueba nuestros dulces.</p>`;
                 localStorage.setItem('zorro_promo_code', 'CASI');
             } else {
-                resDiv.innerHTML = `<h3>¡FELICIDADES! 🎉</h3><p>Has ganado: <strong>${winner.label}</strong></p><p>El descuento se ha aplicado a tu carrito.</p>`;
+                resDiv.innerHTML = `<h3 style="color:#2ed573">¡GANASTE! 🎉</h3><p style="font-size:1.2rem;">${winner.label}</p><p>Descuento guardado en tu cesta.</p>`;
                 localStorage.setItem('zorro_promo_code', winner.id);
                 storedCode = winner.id;
                 showPromoInCart(winner.id);
-                confetti({
-                    particleCount: 150,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
+                // Lluvia de confeti masiva
+                var end = Date.now() + (2 * 1000);
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
             }
 
             setTimeout(() => {
                 closeWheel();
                 document.getElementById('wheel-trigger').classList.add('hidden');
-                if(winner.id !== 'CASI') openCart(); // Abrir carrito para que vean el premio
-            }, 3000);
+                if(winner.id !== 'CASI') openCart(); 
+            }, 4000);
         }
 
         function showPromoInCart(code) {
             const area = document.getElementById('promo-area');
             let text = "";
-            if(code === 'NAP15') text = "15% Dto - Navidad Mágica 🎄";
-            if(code === 'NAP10') text = "10% Dto - Dulce Navidad ⭐";
-            if(code === 'NAP5') text = "5% Dto - Galletita Feliz ❄";
+            let subtext = "";
+            if(code === 'NAP15') { text = "Navidad Mágica"; subtext = "-15% Descuento"; }
+            if(code === 'NAP10') { text = "Dulce Navidad"; subtext = "-10% Descuento"; }
+            if(code === 'NAP5') { text = "Galletita Feliz"; subtext = "-5% Descuento"; }
 
             area.innerHTML = `
                 <div class="cart-promo-banner">
                     <i class="fas fa-gift"></i>
-                    <div>
-                        <div>¡Código Aplicado!</div>
-                        <div style="font-size:0.8rem; opacity:0.8">${text}</div>
+                    <div style="flex-grow:1;">
+                        <div>${text}</div>
+                        <div style="font-size:0.8rem; opacity:0.9">${subtext} (Código: ${code})</div>
                     </div>
+                    <i class="fas fa-check"></i>
                 </div>
             `;
         }
@@ -486,7 +552,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderGrid('todos');
             updateUI();
-            checkWheelState(); // Verificar ruleta
+            checkWheelState(); 
         });
 
         function renderGrid(filtro) {
@@ -570,13 +636,12 @@
             items.forEach(i => msg += `▪️ *${i.nombre}* (x${i.qty})%0A`);
             msg += `%0A📦 *Total unidades:* ${document.getElementById('total-items').innerText}`;
             
-            // Añadir código promocional si existe
             if (storedCode && storedCode !== 'CASI') {
                 let promoText = "";
-                if(storedCode === 'NAP15') promoText = "Navidad Mágica (15%)";
-                if(storedCode === 'NAP10') promoText = "Dulce Navidad (10%)";
-                if(storedCode === 'NAP5') promoText = "Galletita Feliz (5%)";
-                msg += `%0A%0A🎟 *CÓDIGO APLICADO:* ${promoText} - ${storedCode}`;
+                if(storedCode === 'NAP15') promoText = "Navidad Mágica (-15%)";
+                if(storedCode === 'NAP10') promoText = "Dulce Navidad (-10%)";
+                if(storedCode === 'NAP5') promoText = "Galletita Feliz (-5%)";
+                msg += `%0A%0A🎁 *CÓDIGO GANADO:* ${promoText} [${storedCode}]`;
             }
 
             msg += "%0A%0AQuedo a la espera de confirmación. ¡Gracias!";
