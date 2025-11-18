@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>El Zorro | Nuevo Obrador en Montoro</title>
+    <title>El Zorro | Repostería Profesional</title>
     
-    <meta name="theme-color" content="#1a1a1a">
+    <meta name="theme-color" content="#FFFBF2">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="description" content="Nueva pastelería artesanal en Montoro, Córdoba. Dulces tradicionales y reparto a domicilio.">
+    <meta name="description" content="Repostería artesanal en Montoro. Dulces tradicionales y Ruleta de descuentos.">
 
-    <!-- Fuentes: Playfair (Elegante) y DM Sans (Moderna) -->
+    <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
@@ -19,10 +19,10 @@
     <style>
         /* --- SISTEMA DE DISEÑO --- */
         :root {
-            --primary: #D4AF37; /* Dorado */
+            --primary: #D4AF37;
             --primary-dark: #b59022;
             --dark: #1a1a1a;
-            --cream-bg: #FFFBF2; /* Fondo color crema/harina */
+            --cream-bg: #FFFBF2;
             --white: #ffffff;
             --gray: #666666;
             --radius-lg: 24px;
@@ -37,16 +37,16 @@
             font-family: 'DM Sans', sans-serif;
             background-color: var(--cream-bg);
             color: var(--dark);
-            padding-bottom: calc(var(--nav-height) + 30px);
+            padding-bottom: calc(var(--nav-height) + 40px);
             overflow-x: hidden;
         }
 
-        h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 700; }
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; font-weight: 700; }
 
-        /* --- HEADER FLOTANTE --- */
+        /* --- HEADER --- */
         .app-header {
             position: fixed; top: 0; left: 0; width: 100%;
-            background: rgba(255, 251, 242, 0.9);
+            background: rgba(255, 251, 242, 0.95);
             backdrop-filter: blur(10px);
             padding: 12px 20px;
             display: flex; justify-content: space-between; align-items: center;
@@ -59,210 +59,175 @@
         .brand-text h1 { font-size: 1.1rem; margin: 0; color: var(--dark); }
         .brand-text small { font-size: 0.7rem; color: var(--primary-dark); font-weight: bold; letter-spacing: 1px; text-transform: uppercase; }
 
-        .cart-btn-top { position: relative; background: none; border: none; font-size: 1.3rem; padding: 5px; }
+        .cart-btn-top { position: relative; background: none; border: none; font-size: 1.3rem; padding: 5px; cursor: pointer; }
         .badge-dot {
             position: absolute; top: 5px; right: 2px; width: 8px; height: 8px;
             background: var(--primary); border-radius: 50%; opacity: 0; transition: 0.3s;
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
         }
         .badge-dot.show { opacity: 1; }
 
-        /* --- HERO SECTION (PORTADA IMPACTANTE) --- */
+        /* --- HERO --- */
         .hero-section {
             position: relative;
-            height: 65vh; /* Ocupa más de la mitad de la pantalla */
-            min-height: 450px;
+            height: 55vh; min-height: 400px;
             background: url('https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&q=80') center/cover no-repeat;
             display: flex; align-items: flex-end;
             margin-bottom: 0;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
             overflow: hidden;
         }
-
-        .hero-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.2), rgba(0,0,0,0.1));
-        }
-
-        .hero-content {
-            position: relative; z-index: 2; padding: 30px 20px 50px 20px; color: white;
-            width: 100%; animation: fadeInUp 1s ease;
-        }
-
-        .location-tag {
-            display: inline-flex; align-items: center; gap: 5px;
-            background: rgba(255,255,255,0.2); backdrop-filter: blur(5px);
-            padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; margin-bottom: 15px;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-
-        .hero-content h2 { font-size: 2.5rem; line-height: 1.1; margin-bottom: 10px; }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.2), rgba(0,0,0,0.1)); }
+        .hero-content { position: relative; z-index: 2; padding: 30px 20px 50px 20px; color: white; width: 100%; animation: fadeInUp 1s ease; }
+        .location-tag { display: inline-flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.3); }
+        .hero-content h2 { font-size: 2.2rem; line-height: 1.1; margin-bottom: 10px; }
         .hero-content p { font-size: 1rem; opacity: 0.9; margin-bottom: 20px; font-weight: 300; max-width: 300px; }
-        
-        .cta-hero {
-            background: var(--primary); color: var(--dark); text-decoration: none;
-            padding: 12px 30px; border-radius: 50px; font-weight: bold; display: inline-block;
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
-        }
+        .cta-hero { background: var(--primary); color: var(--dark); text-decoration: none; padding: 12px 30px; border-radius: 50px; font-weight: bold; display: inline-block; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); }
 
-        /* --- BARRA DE INFORMACIÓN --- */
-        .info-bar {
-            display: flex; gap: 15px; overflow-x: auto; padding: 25px 20px;
-            scrollbar-width: none;
-        }
+        /* --- INFO BAR --- */
+        .info-bar { display: flex; gap: 12px; overflow-x: auto; padding: 25px 20px; scrollbar-width: none; }
         .info-bar::-webkit-scrollbar { display: none; }
-
-        .info-item {
-            flex: 0 0 auto; display: flex; align-items: center; gap: 10px;
-            background: white; padding: 10px 15px; border-radius: 50px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.03);
-        }
+        .info-item { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; background: white; padding: 8px 15px; border-radius: 50px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.03); font-size: 0.8rem; font-weight: 500; }
         .info-item i { color: var(--primary-dark); }
-        .info-item span { font-size: 0.85rem; font-weight: 500; white-space: nowrap; }
 
-        /* --- BIENVENIDA / STORYTELLING --- */
-        .welcome-box {
-            margin: 0 20px 30px 20px;
-            background: white; padding: 25px; border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-card); text-align: center;
-            position: relative; overflow: hidden;
-        }
-        .welcome-box::before {
-            content: '"'; font-family: 'Playfair Display'; font-size: 6rem;
-            position: absolute; top: -20px; left: 10px; color: #f0f0f0; z-index: 0;
-        }
-        .welcome-content { position: relative; z-index: 1; }
-        .welcome-content h3 { font-size: 1.5rem; margin-bottom: 10px; }
-        .welcome-content p { font-size: 0.95rem; color: var(--gray); line-height: 1.6; margin-bottom: 15px; }
-        .divider { width: 50px; height: 3px; background: var(--primary); margin: 0 auto; }
+        /* --- SOBRE NOSOTROS --- */
+        .about-box { margin: 0 20px 30px 20px; background: white; padding: 30px 25px; border-radius: var(--radius-lg); box-shadow: var(--shadow-card); text-align: left; position: relative; }
+        .about-header { text-align: center; margin-bottom: 20px; }
+        .about-header h3 { font-size: 1.6rem; color: var(--dark); margin-bottom: 10px; }
+        .divider { width: 50px; height: 3px; background: var(--primary); margin: 0 auto; border-radius: 2px; }
+        .about-text p { font-size: 0.95rem; color: var(--gray); line-height: 1.7; margin-bottom: 15px; }
+        .about-text p:last-child { margin-bottom: 0; }
+        .about-icon-float { position: absolute; top: 20px; right: 20px; font-size: 4rem; color: var(--primary); opacity: 0.1; }
 
-        /* --- CATEGORÍAS --- */
+        /* --- CATALOGO --- */
         .cat-header { padding: 0 20px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; }
-        .cat-header h3 { font-size: 1.3rem; }
-        
-        .cat-scroll {
-            display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px 20px;
-            scrollbar-width: none;
-        }
+        .cat-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px 20px; scrollbar-width: none; }
         .cat-scroll::-webkit-scrollbar { display: none; }
+        .cat-chip { background: transparent; border: 1px solid #ddd; padding: 8px 18px; border-radius: 50px; white-space: nowrap; font-size: 0.9rem; font-weight: 500; color: var(--gray); transition: all 0.3s; cursor: pointer; }
+        .cat-chip.active { background: var(--dark); color: white; border-color: var(--dark); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
-        .cat-chip {
-            background: transparent; border: 1px solid #ddd;
-            padding: 8px 20px; border-radius: 50px;
-            white-space: nowrap; font-size: 0.9rem; font-weight: 500; color: var(--gray);
-            transition: all 0.3s;
-        }
-        .cat-chip.active {
-            background: var(--dark); color: white; border-color: var(--dark);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        /* --- GRID PRODUCTOS --- */
-        .product-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-            gap: 15px; padding: 0 20px;
-        }
-
-        .product-card {
-            background: white; border-radius: var(--radius-md);
-            overflow: hidden; box-shadow: var(--shadow-card);
-            display: flex; flex-direction: column; transition: transform 0.2s;
-        }
-        .product-card:active { transform: scale(0.97); }
-
-        .img-wrapper { position: relative; height: 150px; background: #eee; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 0 20px; }
+        .product-card { background: white; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-card); display: flex; flex-direction: column; height: 100%; }
+        .img-wrapper { position: relative; height: 160px; background: #f0f0f0; }
         .img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .btn-add-mini {
-            position: absolute; bottom: 8px; right: 8px;
-            width: 32px; height: 32px; background: white; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer;
-            color: var(--dark); transition: 0.3s;
-        }
-        .btn-add-mini.active { background: var(--primary); color: white; transform: rotate(360deg); }
+        .btn-add-mini { position: absolute; bottom: 10px; right: 10px; width: 36px; height: 36px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); cursor: pointer; color: var(--dark); transition: 0.3s; z-index: 10; }
+        .btn-add-mini:active, .btn-add-mini.active { background: var(--primary); color: white; transform: scale(1.1); }
+        .info-wrapper { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+        .cat-tag-small { font-size: 0.7rem; text-transform: uppercase; color: #aaa; font-weight: bold; letter-spacing: 0.5px; margin-top: auto; }
 
-        .info-wrapper { padding: 12px; flex-grow: 1; }
-        .info-wrapper h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; font-family: 'DM Sans'; }
-        .info-wrapper p { font-size: 0.8rem; color: var(--gray); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        /* --- BOTTOM NAV & CART --- */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: white; height: var(--nav-height);
-            display: flex; justify-content: space-around; align-items: center;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 500;
-            border-top-left-radius: 20px; border-top-right-radius: 20px;
+        /* --- RULETA (Botón y Modal) --- */
+        .float-wheel-btn {
+            position: fixed; bottom: 100px; right: 20px;
+            width: 60px; height: 60px;
+            background: linear-gradient(45deg, #ff5252, #f48fb1);
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 2rem; box-shadow: 0 5px 20px rgba(255, 82, 82, 0.4);
+            cursor: pointer; z-index: 800;
+            animation: bounce 2s infinite;
         }
+        .float-wheel-btn.hidden { display: none; }
 
-        .nav-item {
-            text-decoration: none; color: #aaa; display: flex; flex-direction: column;
-            align-items: center; font-size: 0.7rem; gap: 4px;
-        }
-        .nav-item i { font-size: 1.4rem; margin-bottom: 2px; }
-        .nav-item.active { color: var(--dark); }
-        
-        /* Carrito Badge en Nav */
-        .nav-cart-cont { position: relative; }
-        .nav-badge {
-            position: absolute; top: -5px; right: -8px;
-            background: var(--primary); color: var(--dark); font-size: 0.65rem;
-            padding: 2px 5px; border-radius: 10px; font-weight: bold;
-            opacity: 0; transition: 0.3s;
-        }
-        .nav-badge.show { opacity: 1; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
-        /* --- CARRITO SHEET --- */
-        .overlay {
+        /* Modal Ruleta */
+        .wheel-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 900;
-            opacity: 0; visibility: hidden; transition: 0.3s;
-            backdrop-filter: blur(3px);
+            background: rgba(0,0,0,0.8); z-index: 2000;
+            display: none; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
         }
+        .wheel-container {
+            background: white; padding: 30px; border-radius: 20px;
+            text-align: center; position: relative; width: 90%; max-width: 400px;
+            overflow: hidden;
+        }
+        .wheel-wrapper {
+            width: 250px; height: 250px; margin: 0 auto 20px;
+            position: relative; border-radius: 50%;
+            border: 8px solid #333;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+        .the-wheel {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #FFD700 0deg 90deg,   /* 15% - Oro */
+                #ff6b6b 90deg 180deg, /* Casi - Rojo */
+                #4ecdc4 180deg 270deg, /* 10% - Turquesa */
+                #a8e6cf 270deg 360deg  /* 5% - Verde Claro */
+            );
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            position: relative;
+        }
+        
+        /* Líneas divisorias y textos dentro de la ruleta (simplificado visualmente) */
+        .wheel-text {
+            position: absolute; top: 50%; left: 50%;
+            transform-origin: 0 0; width: 50%; height: 2px;
+        }
+        .wt-1 { transform: rotate(45deg) translate(20px); color: #964B00; font-weight: bold; }
+        .wt-2 { transform: rotate(135deg) translate(20px); color: white; font-weight: bold; }
+        .wt-3 { transform: rotate(225deg) translate(20px); color: #333; font-weight: bold; }
+        .wt-4 { transform: rotate(315deg) translate(20px); color: #333; font-weight: bold; }
+
+        .wheel-pointer {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid #333;
+            z-index: 10;
+        }
+        
+        .btn-spin {
+            background: var(--dark); color: white; padding: 12px 30px;
+            border: none; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn-spin:disabled { background: #ccc; transform: none; }
+        
+        .close-wheel { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; border: none; background: none; cursor: pointer; }
+
+        /* Banner de descuento en el carrito */
+        .cart-promo-banner {
+            background: linear-gradient(45deg, #D4AF37, #F3E5AB);
+            padding: 12px; border-radius: 10px; margin-bottom: 15px;
+            display: flex; align-items: center; gap: 10px; color: #5e4003;
+            font-weight: bold; font-size: 0.9rem;
+            animation: slideDown 0.5s ease;
+        }
+        .cart-promo-banner i { font-size: 1.2rem; }
+
+        /* --- NAV & UI --- */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; height: var(--nav-height); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 500; border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        .nav-item { text-decoration: none; color: #bbb; display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; gap: 4px; transition: color 0.3s; }
+        .nav-item.active { color: var(--dark); }
+        .nav-cart-cont { position: relative; }
+        .nav-badge { position: absolute; top: -6px; right: -8px; background: var(--primary); color: var(--dark); font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; opacity: 0; transition: 0.3s; transform: scale(0); }
+        .nav-badge.show { opacity: 1; transform: scale(1); }
+
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 900; opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(3px); }
         .overlay.active { opacity: 1; visibility: visible; }
-
-        .cart-sheet {
-            position: fixed; bottom: -100%; left: 0; width: 100%;
-            background: white; z-index: 1000;
-            border-top-left-radius: 25px; border-top-right-radius: 25px;
-            padding: 20px; max-height: 80vh; display: flex; flex-direction: column;
-            transition: bottom 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-        }
+        .cart-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; background: white; z-index: 1000; border-top-left-radius: 25px; border-top-right-radius: 25px; padding: 20px; max-height: 85vh; display: flex; flex-direction: column; transition: bottom 0.4s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.2); }
         .cart-sheet.active { bottom: 0; }
-
-        .cart-header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-        .cart-items { overflow-y: auto; flex-grow: 1; padding-bottom: 20px; }
-        
-        .cart-row { display: flex; gap: 15px; margin-bottom: 15px; align-items: center; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .cart-items { overflow-y: auto; flex-grow: 1; padding-bottom: 20px; padding-right: 5px; }
+        .cart-row { display: flex; gap: 15px; margin-bottom: 15px; align-items: center; background: #f9f9f9; padding: 10px; border-radius: 12px; }
         .cart-row img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
-        .qty-box { display: flex; align-items: center; background: #f4f4f4; border-radius: 8px; padding: 2px 5px; }
-        .qty-box button { background: none; border: none; padding: 5px 8px; font-weight: bold; }
-
-        .btn-whatsapp {
-            width: 100%; padding: 16px; background: #25D366; color: white;
-            border: none; border-radius: 15px; font-size: 1rem; font-weight: bold;
-            display: flex; justify-content: center; align-items: center; gap: 10px;
-        }
-
-        /* ANIMACIONES */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .toast {
-            position: fixed; top: 90px; left: 50%; transform: translateX(-50%) translateY(-20px);
-            background: var(--dark); color: white; padding: 12px 25px; border-radius: 30px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2); z-index: 1200; opacity: 0; transition: 0.4s;
-            pointer-events: none; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;
-        }
+        .qty-box { display: flex; align-items: center; background: white; border-radius: 8px; padding: 2px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .qty-box button { background: none; border: none; padding: 5px 10px; font-weight: bold; cursor: pointer; }
+        .btn-whatsapp { width: 100%; padding: 16px; background: #25D366; color: white; border: none; border-radius: 15px; font-size: 1rem; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
+        .toast { position: fixed; top: 90px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--dark); color: white; padding: 12px 25px; border-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); z-index: 1200; opacity: 0; transition: 0.4s; pointer-events: none; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     </style>
 </head>
 <body>
 
-    <!-- HEADER FLOTANTE -->
+    <!-- HEADER -->
     <header class="app-header">
         <div class="brand">
             <img src="https://latanadelzorro.github.io/Pagina-web/img/icono_vectorizado.svg" alt="Logo">
@@ -277,91 +242,90 @@
         </button>
     </header>
 
-    <!-- HERO PRINCIPAL (Entrada impactante) -->
+    <!-- HERO -->
     <section class="hero-section">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <div class="location-tag">
-                <i class="fas fa-map-marker-alt" style="color: #D4AF37;"></i> &nbsp; Montoro
-            </div>
+            <div class="location-tag"><i class="fas fa-map-marker-alt" style="color: #D4AF37;"></i> &nbsp; Montoro</div>
             <h2>Tradición que renace.</h2>
-            <p>Nuevo obrador artesanal. Recuperando las recetas de nuestras abuelas para ti.</p>
-            <a href="#catalogo" class="cta-hero">Ver la Carta</a>
+            <p>Dulces artesanales de alta calidad, perfectos para tu negocio o eventos.</p>
+            <a href="#catalogo" class="cta-hero">Ver Carta 2025</a>
         </div>
     </section>
 
-    <!-- BARRA DE INFORMACIÓN (Scroll horizontal) -->
+    <!-- INFO -->
     <div class="info-bar">
-        <div class="info-item">
-            <i class="fas fa-motorcycle"></i>
-            <span>Reparto en Montoro</span>
-        </div>
-        <div class="info-item">
-            <i class="fas fa-bread-slice"></i>
-            <span>100% Artesano</span>
-        </div>
-        <div class="info-item">
-            <i class="fab fa-whatsapp"></i>
-            <span>Pedidos Online</span>
-        </div>
-        <div class="info-item">
-            <i class="fas fa-calendar-check"></i>
-            <span>Encargos Eventos</span>
-        </div>
+        <div class="info-item"><i class="fas fa-motorcycle"></i> <span>Reparto Local</span></div>
+        <div class="info-item"><i class="fas fa-bread-slice"></i> <span>100% Artesano</span></div>
+        <div class="info-item"><i class="fab fa-whatsapp"></i> <span>Pedidos Online</span></div>
     </div>
 
-    <!-- HISTORIA (Contexto) -->
-    <section class="welcome-box">
-        <div class="welcome-content">
-            <h3>Nuevo Obrador 2025</h3>
+    <!-- ABOUT -->
+    <section class="about-box">
+        <i class="fas fa-quote-right about-icon-float"></i>
+        <div class="about-header">
+            <h3>Sobre Nosotros</h3>
             <div class="divider"></div>
-            <br>
-            <p>Somos una panadería y pastelería joven en <strong>Montoro, Córdoba</strong>. Nuestro sueño es simple: volver a los ingredientes naturales y al horneado diario. Sin prisas, sin conservantes. Solo sabor.</p>
+        </div>
+        <div class="about-text">
+            <p>En <strong>El Zorro Repostería Profesional</strong>, nos apasiona crear dulces artesanales con ingredientes naturales y recetas tradicionales. Desde 2025, hemos estado endulzando momentos con productos de alta calidad, perfectos para tu negocio o eventos especiales.</p>
+            <p>Nuestro equipo de expertos reposteros combina tradición e innovación para ofrecer sabores inolvidables. Comprometidos con la frescura y la sostenibilidad, utilizamos ingredientes locales siempre que sea posible.</p>
         </div>
     </section>
 
-    <!-- CATÁLOGO -->
-    <div id="catalogo" style="padding-top: 20px;">
+    <!-- CATALOGO -->
+    <div id="catalogo" style="padding-top: 10px;">
         <div class="cat-header">
             <h3>Nuestra Vitrina</h3>
         </div>
-        
-        <!-- Filtros -->
         <div class="cat-scroll">
             <button class="cat-chip active" onclick="filter('todos', this)">Todo</button>
             <button class="cat-chip" onclick="filter('Tradicional', this)">Tradicional</button>
             <button class="cat-chip" onclick="filter('Navideño', this)">Navidad</button>
             <button class="cat-chip" onclick="filter('Semana Santa', this)">Semana Santa</button>
         </div>
+        <div class="product-grid" id="grid"></div>
+    </div>
 
-        <!-- Grid -->
-        <div class="product-grid" id="grid">
-            <!-- JS -->
+    <!-- RULETA FLOTANTE -->
+    <div class="float-wheel-btn" id="wheel-trigger" onclick="openWheel()">
+        🎁
+    </div>
+
+    <!-- MODAL RULETA -->
+    <div class="wheel-modal" id="wheel-modal">
+        <div class="wheel-container">
+            <button class="close-wheel" onclick="closeWheel()">&times;</button>
+            <h3 style="margin-bottom:20px;">¡Prueba tu Suerte!</h3>
+            <p style="font-size:0.9rem; color:#666; margin-bottom:20px;">Gira para ganar un código de descuento exclusivo.</p>
+            
+            <div class="wheel-wrapper">
+                <div class="wheel-pointer"></div>
+                <div class="the-wheel" id="the-wheel"></div>
+            </div>
+            
+            <div id="result-area">
+                <button class="btn-spin" id="btn-spin" onclick="spinWheel()">¡GIRAR!</button>
+            </div>
         </div>
     </div>
-    
-    <!-- Footer Simple -->
-    <div style="text-align: center; padding: 40px 20px; font-size: 0.8rem; color: #999;">
-        <p>El Zorro Artesanos <br> Montoro, Córdoba</p>
-        <p style="margin-top: 5px;">&copy; 2025</p>
+
+    <!-- FOOTER -->
+    <div style="text-align: center; padding: 50px 20px 20px; font-size: 0.8rem; color: #aaa;">
+        <p>El Zorro Repostería Profesional<br>Montoro, Córdoba</p>
+        <p style="margin-top: 5px; opacity: 0.6;">&copy; 2025</p>
     </div>
 
-    <!-- BOTTOM NAV -->
+    <!-- NAV -->
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active" onclick="window.scrollTo(0,0)">
-            <i class="fas fa-home"></i>
-            <span>Inicio</span>
-        </a>
-        <a href="https://wa.me/34624416475" class="nav-item">
-            <i class="fab fa-whatsapp"></i>
-            <span>Hablar</span>
-        </a>
-        <div class="nav-item" onclick="openCart()">
+        <a href="#" class="nav-item active" onclick="window.scrollTo({top:0, behavior:'smooth'})"><i class="fas fa-home"></i><span>Inicio</span></a>
+        <a href="https://wa.me/34624416475" target="_blank" class="nav-item"><i class="fab fa-whatsapp"></i><span>Hablar</span></a>
+        <div class="nav-item" onclick="openCart()" style="cursor:pointer;">
             <div class="nav-cart-cont">
                 <i class="fas fa-shopping-cart"></i>
                 <span class="nav-badge" id="nav-badge">0</span>
             </div>
-            <span>Mi Cesta</span>
+            <span>Cesta</span>
         </div>
     </nav>
 
@@ -370,181 +334,254 @@
     <div class="cart-sheet" id="cart-sheet">
         <div class="cart-header">
             <h3><i class="fas fa-receipt"></i> Tu Pedido</h3>
-            <button onclick="closeCart()" style="border:none; background:none; font-size:1.5rem;">&times;</button>
+            <button onclick="closeCart()" style="border:none; background:none; font-size:1.5rem; cursor:pointer;">&times;</button>
         </div>
-        <div class="cart-items" id="cart-items">
-            <!-- Items -->
-        </div>
+        
+        <!-- AREA DEL CODIGO PROMOCIONAL -->
+        <div id="promo-area"></div>
+
+        <div class="cart-items" id="cart-items"></div>
+        
         <div style="margin-top:auto;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold; font-size:1.1rem;">
                 <span>Total Artículos:</span>
                 <span id="total-items">0</span>
             </div>
             <button class="btn-whatsapp" onclick="sendOrder()">
-                Realizar Pedido <i class="fab fa-whatsapp"></i>
+                Realizar Pedido por WhatsApp <i class="fab fa-whatsapp"></i>
             </button>
         </div>
     </div>
 
-    <!-- TOAST -->
-    <div class="toast" id="toast">
-        <i class="fas fa-check-circle" style="color: #25D366;"></i>
-        <span>Añadido a la cesta</span>
-    </div>
+    <div class="toast" id="toast"><i class="fas fa-check-circle" style="color: #25D366;"></i><span>Añadido</span></div>
 
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         /* --- DATOS --- */
         const productos = [
-            { id: 1, nombre: "Roscos de Vino", desc: "Receta montoreña con vino y ajonjolí.", cat: ["Tradicional", "Navideño"], img: "img/roscos-vino.jpeg" },
-            { id: 2, nombre: "Tiramisú Artesano", desc: "Capas de mascarpone y café recién hecho.", cat: ["Tradicional"], img: "img/tiramisu.jpg" },
-            { id: 3, nombre: "Mantecados", desc: "De canela y limón. Se deshacen en la boca.", cat: ["Navideño"], img: "img/mantecados.jpeg" },
-            { id: 4, nombre: "Galletas de Jengibre", desc: "Divertidas y crujientes, ideal para peques.", cat: ["Navideño"], img: "img/galletas gengibre.jpeg" },
-            { id: 5, nombre: "Palmeras Caramelizadas", desc: "Hojaldre de mantequilla crujiente.", cat: ["Tradicional"], img: "img/palmeras.avif" },
-            { id: 6, nombre: "Roscos de Azúcar", desc: "Fritos del día, tiernos por dentro.", cat: ["Tradicional"], img: "img/roscosdeazucar.jpg" },
-            { id: 7, nombre: "Pestiños de Miel", desc: "Clásico de Semana Santa en Córdoba.", cat: ["Semana Santa"], img: "img/pestiños.jpg" }
+            { id: 1, nombre: "Roscos de Vino", desc: "Receta montoreña con vino tinto y ajonjolí.", cat: ["Tradicional", "Navideño"], img: "https://latanadelzorro.github.io/Pagina-web/img/roscos-vino.jpeg" },
+            { id: 2, nombre: "Tiramisú Artesano", desc: "Capas de mascarpone, bizcocho y café.", cat: ["Tradicional"], img: "https://latanadelzorro.github.io/Pagina-web/img/tiramisu.jpg" },
+            { id: 3, nombre: "Mantecados Clásicos", desc: "De canela y limón. Textura suave.", cat: ["Navideño"], img: "https://latanadelzorro.github.io/Pagina-web/img/mantecados.jpeg" },
+            { id: 4, nombre: "Galletas Jengibre", desc: "Divertidas y crujientes con miel.", cat: ["Navideño"], img: "https://latanadelzorro.github.io/Pagina-web/img/galletas%20gengibre.jpeg" },
+            { id: 5, nombre: "Palmeras Hojaldre", desc: "Mantequilla pura y caramelizado.", cat: ["Tradicional"], img: "https://latanadelzorro.github.io/Pagina-web/img/palmeras.avif" },
+            { id: 6, nombre: "Roscos de Azúcar", desc: "Fritos del día, tiernos y rebozados.", cat: ["Tradicional"], img: "https://latanadelzorro.github.io/Pagina-web/img/roscosdeazucar.jpg" },
+            { id: 7, nombre: "Pestiños de Miel", desc: "Clásico con vino, anís y baño de miel.", cat: ["Semana Santa"], img: "https://latanadelzorro.github.io/Pagina-web/img/pestiños.jpg" }
         ];
 
-        let cart = JSON.parse(localStorage.getItem('zorro_montoro_cart')) || {};
+        let cart = JSON.parse(localStorage.getItem('zorro_cart_v2')) || {};
+        
+        // --- RULETA LOGICA ---
+        // Premios definidos por ángulos
+        // 0-90 (Amarillo): NAP15
+        // 90-180 (Rojo): CASI
+        // 180-270 (Turquesa): NAP10
+        // 270-360 (Verde): NAP5
+        const prizes = [
+            { id: 'NAP15', label: '15% Dto - NAP15', min: 0, max: 90 },
+            { id: 'CASI', label: 'Casi Casi 🔄', min: 90, max: 180 },
+            { id: 'NAP10', label: '10% Dto - NAP10', min: 180, max: 270 },
+            { id: 'NAP5', label: '5% Dto - NAP5', min: 270, max: 360 }
+        ];
 
-        /* --- INICIO --- */
+        // Estado de la ruleta
+        let storedCode = localStorage.getItem('zorro_promo_code'); // Guardamos el código ganado
+        let hasSpun = localStorage.getItem('zorro_has_spun'); // Guardamos si ya tiró
+
+        function checkWheelState() {
+            const btn = document.getElementById('wheel-trigger');
+            if (hasSpun === 'true') {
+                btn.classList.add('hidden'); // Si ya tiró, ocultar botón
+                if (storedCode && storedCode !== 'CASI') {
+                    showPromoInCart(storedCode); // Si ganó, mostrar en carrito
+                }
+            }
+        }
+
+        function openWheel() {
+            document.getElementById('wheel-modal').style.display = 'flex';
+        }
+
+        function closeWheel() {
+            document.getElementById('wheel-modal').style.display = 'none';
+        }
+
+        function spinWheel() {
+            if(hasSpun === 'true') return;
+
+            const btn = document.getElementById('btn-spin');
+            btn.disabled = true;
+            btn.innerText = "Girando...";
+
+            // Determinar resultado aleatorio
+            // Truco: Hacemos que 'Casi' sea un poco menos probable para que sea divertido, o totalmente random.
+            // Vamos a hacerlo totalmente random 0-360.
+            // Pero ajustamos la rotación final para que la flecha (arriba) apunte al segmento correcto.
+            // La flecha está en top (0deg visualmente, pero en CSS rotate 0 es 12h).
+            // Como la ruleta gira CLOCKWISE, para que un segmento caiga en la flecha:
+            // Final Rotation = 360 * Vueltas + (360 - AnguloDeseado)
+            
+            const randomDeg = Math.floor(Math.random() * 360); 
+            const spins = 5; // Vueltas completas
+            const totalDeg = (spins * 360) + (360 - randomDeg); 
+
+            document.getElementById('the-wheel').style.transform = `rotate(${totalDeg}deg)`;
+
+            // Calcular ganador basado en randomDeg
+            // randomDeg es donde "cae" la flecha relativo al inicio del disco.
+            let winner = prizes.find(p => randomDeg >= p.min && randomDeg < p.max);
+
+            setTimeout(() => {
+                finishSpin(winner);
+            }, 4000); // Duración de la transición CSS
+        }
+
+        function finishSpin(winner) {
+            localStorage.setItem('zorro_has_spun', 'true');
+            hasSpun = 'true';
+
+            const resDiv = document.getElementById('result-area');
+            
+            if (winner.id === 'CASI') {
+                resDiv.innerHTML = `<h3>¡Oooh! Casi...</h3><p>Inténtalo en tu próxima visita.</p>`;
+                localStorage.setItem('zorro_promo_code', 'CASI');
+            } else {
+                resDiv.innerHTML = `<h3>¡FELICIDADES! 🎉</h3><p>Has ganado: <strong>${winner.label}</strong></p><p>El descuento se ha aplicado a tu carrito.</p>`;
+                localStorage.setItem('zorro_promo_code', winner.id);
+                storedCode = winner.id;
+                showPromoInCart(winner.id);
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+
+            setTimeout(() => {
+                closeWheel();
+                document.getElementById('wheel-trigger').classList.add('hidden');
+                if(winner.id !== 'CASI') openCart(); // Abrir carrito para que vean el premio
+            }, 3000);
+        }
+
+        function showPromoInCart(code) {
+            const area = document.getElementById('promo-area');
+            let text = "";
+            if(code === 'NAP15') text = "15% Dto - Navidad Mágica 🎄";
+            if(code === 'NAP10') text = "10% Dto - Dulce Navidad ⭐";
+            if(code === 'NAP5') text = "5% Dto - Galletita Feliz ❄";
+
+            area.innerHTML = `
+                <div class="cart-promo-banner">
+                    <i class="fas fa-gift"></i>
+                    <div>
+                        <div>¡Código Aplicado!</div>
+                        <div style="font-size:0.8rem; opacity:0.8">${text}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- PRINCIPAL ---
         document.addEventListener('DOMContentLoaded', () => {
             renderGrid('todos');
             updateUI();
+            checkWheelState(); // Verificar ruleta
         });
 
-        /* --- RENDER --- */
         function renderGrid(filtro) {
             const grid = document.getElementById('grid');
             grid.innerHTML = '';
             const items = filtro === 'todos' ? productos : productos.filter(p => p.cat.includes(filtro));
-
             items.forEach(p => {
                 const div = document.createElement('div');
                 div.className = 'product-card';
+                const fallback = "this.src='https://placehold.co/300?text=El+Zorro'";
                 div.innerHTML = `
                     <div class="img-wrapper">
-                        <img src="${p.img}" loading="lazy" onerror="this.src='https://placehold.co/300?text=El+Zorro'">
-                        <div class="btn-add-mini" onclick="addToCart(${p.id}, this)">
-                            <i class="fas fa-plus"></i>
-                        </div>
+                        <img src="${p.img}" loading="lazy" alt="${p.nombre}" onerror="${fallback}">
+                        <div class="btn-add-mini" onclick="addToCart(${p.id}, this)"><i class="fas fa-plus"></i></div>
                     </div>
                     <div class="info-wrapper">
                         <h4>${p.nombre}</h4>
                         <p>${p.desc}</p>
+                        <div class="cat-tag-small">${p.cat[0]}</div>
                     </div>
                 `;
                 grid.appendChild(div);
             });
         }
 
-        /* --- LOGICA CARRITO --- */
         function addToCart(id, btn) {
             const item = productos.find(p => p.id === id);
-            if(cart[id]) cart[id].qty++;
-            else cart[id] = { ...item, qty: 1 };
-            
-            // Efecto visual
-            btn.classList.add('active');
-            setTimeout(() => btn.classList.remove('active'), 300);
-            
+            if(cart[id]) cart[id].qty++; else cart[id] = { ...item, qty: 1 };
+            btn.classList.add('active'); setTimeout(() => btn.classList.remove('active'), 300);
             showToast(`Añadido: ${item.nombre}`);
-            saveCart();
-            updateUI();
+            saveCart(); updateUI();
         }
 
         function updateQty(id, delta) {
-            if(cart[id]) {
-                cart[id].qty += delta;
-                if(cart[id].qty <= 0) delete cart[id];
-            }
-            saveCart();
-            updateUI();
-            renderCartItems();
+            if(cart[id]) { cart[id].qty += delta; if(cart[id].qty <= 0) delete cart[id]; }
+            saveCart(); updateUI(); renderCartItems();
         }
 
-        function saveCart() {
-            localStorage.setItem('zorro_montoro_cart', JSON.stringify(cart));
-        }
+        function saveCart() { localStorage.setItem('zorro_cart_v2', JSON.stringify(cart)); }
 
         function updateUI() {
             const total = Object.values(cart).reduce((acc, i) => acc + i.qty, 0);
-            
             const badge = document.getElementById('nav-badge');
             const dot = document.getElementById('top-dot');
             document.getElementById('total-items').innerText = total;
-
-            if(total > 0) {
-                badge.classList.add('show');
-                dot.classList.add('show');
-                badge.innerText = total;
-            } else {
-                badge.classList.remove('show');
-                dot.classList.remove('show');
-            }
+            if(total > 0) { badge.classList.add('show'); dot.classList.add('show'); badge.innerText = total; } 
+            else { badge.classList.remove('show'); dot.classList.remove('show'); }
         }
 
-        /* --- UI ACTIONS --- */
-        function openCart() {
-            renderCartItems();
-            document.getElementById('overlay').classList.add('active');
-            document.getElementById('cart-sheet').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeCart() {
-            document.getElementById('overlay').classList.remove('active');
-            document.getElementById('cart-sheet').classList.remove('active');
-            document.body.style.overflow = '';
-        }
+        function openCart() { renderCartItems(); document.getElementById('overlay').classList.add('active'); document.getElementById('cart-sheet').classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeCart() { document.getElementById('overlay').classList.remove('active'); document.getElementById('cart-sheet').classList.remove('active'); document.body.style.overflow = ''; }
 
         function renderCartItems() {
             const div = document.getElementById('cart-items');
             const items = Object.values(cart);
-            
-            if(items.length === 0) {
-                div.innerHTML = "<div style='text-align:center; margin-top:30px; opacity:0.5'>Tu cesta está vacía</div>";
-                return;
-            }
-
+            if(items.length === 0) { div.innerHTML = `<div style='text-align:center; margin-top:40px; opacity:0.5;'><i class="fas fa-shopping-basket" style="font-size:3rem; margin-bottom:15px; color:#ccc;"></i><p>Tu cesta está vacía.</p></div>`; return; }
             div.innerHTML = items.map(i => `
                 <div class="cart-row">
-                    <img src="${i.img}">
+                    <img src="${i.img}" alt="${i.nombre}">
                     <div style="flex-grow:1">
-                        <div style="font-weight:bold; font-size:0.9rem">${i.nombre}</div>
+                        <div style="font-weight:bold; font-size:0.95rem; color:var(--dark);">${i.nombre}</div>
+                        <div style="font-size:0.8rem; color:#777;">${i.cat[0]}</div>
                     </div>
                     <div class="qty-box">
                         <button onclick="updateQty(${i.id}, -1)">-</button>
-                        <span style="font-size:0.9rem; width:20px; text-align:center;">${i.qty}</span>
+                        <span style="font-size:0.9rem; width:25px; text-align:center;">${i.qty}</span>
                         <button onclick="updateQty(${i.id}, 1)">+</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function filter(cat, btn) {
-            document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            renderGrid(cat);
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.querySelector('span').innerText = msg;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2000);
-        }
+        function filter(cat, btn) { document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active')); btn.classList.add('active'); renderGrid(cat); }
+        function showToast(msg) { const t = document.getElementById('toast'); t.querySelector('span').innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
 
         function sendOrder() {
             const items = Object.values(cart);
             if(items.length === 0) return;
             
-            let msg = "Hola El Zorro, soy vecino de Montoro (o alrededores) y quiero pedir:%0A%0A";
-            items.forEach(i => msg += `▪️ ${i.nombre} (x${i.qty})%0A`);
-            msg += `%0A📦 Total unidades: ${document.getElementById('total-items').innerText}`;
+            let msg = "👋 Hola El Zorro! Me gustaría hacer este pedido:%0A%0A";
+            items.forEach(i => msg += `▪️ *${i.nombre}* (x${i.qty})%0A`);
+            msg += `%0A📦 *Total unidades:* ${document.getElementById('total-items').innerText}`;
             
+            // Añadir código promocional si existe
+            if (storedCode && storedCode !== 'CASI') {
+                let promoText = "";
+                if(storedCode === 'NAP15') promoText = "Navidad Mágica (15%)";
+                if(storedCode === 'NAP10') promoText = "Dulce Navidad (10%)";
+                if(storedCode === 'NAP5') promoText = "Galletita Feliz (5%)";
+                msg += `%0A%0A🎟 *CÓDIGO APLICADO:* ${promoText} - ${storedCode}`;
+            }
+
+            msg += "%0A%0AQuedo a la espera de confirmación. ¡Gracias!";
             window.open(`https://wa.me/34624416475?text=${msg}`, '_blank');
         }
-
     </script>
 </body>
 </html>
