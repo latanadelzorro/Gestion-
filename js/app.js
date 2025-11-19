@@ -27,18 +27,7 @@ function updateThemeIcon(isDark) {
 }
 
 /* --- DATOS EXTENDIDOS --- */
-/* --- DATOS EXTENDIDOS --- */
-const productos = [
-    { id: 1, nombre: "Roscos de Vino", desc: "Receta montoreña con vino tinto y ajonjolí.", cat: ["Tradicional", "Navideño"], img: "img/roscos-vino.jpeg", alergenos: ["Gluten", "Sulfitos", "Sésamo"] },
-    { id: 2, nombre: "Tiramisú Artesano", desc: "Capas de mascarpone, bizcocho y café.", cat: ["Tradicional"], img: "img/tiramisu.jpg", alergenos: ["Lácteos", "Gluten", "Huevo"] },
-    { id: 3, nombre: "Mantecados Clásicos", desc: "De canela y limón. Textura suave.", cat: ["Navideño"], img: "img/mantecados.jpeg", alergenos: ["Gluten", "Frutos Secos"] },
-    { id: 4, nombre: "Galletas Jengibre", desc: "Divertidas y crujientes con miel.", cat: ["Navideño"], img: "img/galletas gengibre.jpeg", alergenos: ["Gluten", "Huevo"] },
-    { id: 5, nombre: "Palmeras Hojaldre", desc: "Mantequilla pura y caramelizado.", cat: ["Tradicional"], img: "img/palmeras.avif", alergenos: ["Gluten", "Lácteos"] },
-    { id: 6, nombre: "Roscos de Azúcar", desc: "Fritos del día, tiernos y rebozados.", cat: ["Tradicional"], img: "img/roscosdeazucar.jpg", alergenos: ["Gluten", "Huevo"] },
-    { id: 7, nombre: "Pestiños de Miel", desc: "Clásico con vino, anís y baño de miel.", cat: ["Semana Santa"], img: "img/pestiños.jpg", alergenos: ["Gluten", "Sulfitos"] },
-    { id: 8, nombre: "Magdalenas Caseras", desc: "Esponjosas, con alto copete, aceite de oliva y ralladura de limón.", cat: ["Tradicional"], img: "img/macdalenas.jpeg", alergenos: ["Gluten", "Huevo"] },
-    { id: 9, nombre: "Cookies con Chips", desc: "Crujientes por fuera y tiernas por dentro, con generosos chips de chocolate.", cat: ["Tradicional"], img: "img/cookies.png", alergenos: ["Gluten", "Huevo", "Lácteos", "Soja"] },
-];
+// Los productos ahora se cargan desde js/config.js
 
 let cart = JSON.parse(localStorage.getItem('zorro_cart_v2')) || {};
 let favorites = JSON.parse(localStorage.getItem('zorro_favs')) || [];
@@ -101,16 +90,7 @@ function closeProduct() {
 
 
 /* --- RULETA LOGICA --- */
-const prizes = [
-    { id: 'NAP15', label: '15% Dto - NAP15', color: '#FFD700' },
-    { id: 'CASI', label: 'Casi Casi... 🥺', color: '#ff4757' },
-    { id: 'NAP10', label: '10% Dto - NAP10', color: '#2ed573' },
-    { id: 'NAP5', label: '5% Dto - NAP5', color: '#1e90ff' },
-    { id: 'NAP15', label: '15% Dto - NAP15', color: '#FFD700' },
-    { id: 'CASI', label: 'Casi Casi... 🥺', color: '#ff4757' },
-    { id: 'NAP10', label: '10% Dto - NAP10', color: '#2ed573' },
-    { id: 'NAP5', label: '5% Dto - NAP5', color: '#1e90ff' }
-];
+// Los premios (prizes) ahora se cargan desde js/config.js
 
 let storedCode = localStorage.getItem('zorro_promo_code');
 let hasSpun = localStorage.getItem('zorro_has_spun');
@@ -118,7 +98,7 @@ let hasSpun = localStorage.getItem('zorro_has_spun');
 function checkWheelState() {
     const btn = document.getElementById('wheel-trigger');
     const now = new Date();
-    const expirationDate = new Date('2025-12-01T00:00:00');
+    const expirationDate = new Date(CONFIG.wheelExpirationDate);
 
     if (now >= expirationDate) {
         // Expired: Clear cache and hide wheel
@@ -170,11 +150,10 @@ function finishSpin(winner) {
 
 function showPromoInCart(code) {
     const area = document.getElementById('promo-area');
-    let text = "", subtext = "";
-    if (code === 'NAP15') { text = "Navidad Mágica"; subtext = "-15% Descuento"; }
-    if (code === 'NAP10') { text = "Dulce Navidad"; subtext = "-10% Descuento"; }
-    if (code === 'NAP5') { text = "Galletita Feliz"; subtext = "-5% Descuento"; }
-    area.innerHTML = `<div class="cart-promo-banner"><i class="fas fa-gift"></i><div style="flex-grow:1;"><div>${text}</div><div style="font-size:0.8rem; opacity:0.9">${subtext}</div></div><i class="fas fa-check"></i></div>`;
+    if (!CONFIG.promoTexts[code]) return;
+
+    const { title, sub } = CONFIG.promoTexts[code];
+    area.innerHTML = `<div class="cart-promo-banner"><i class="fas fa-gift"></i><div style="flex-grow:1;"><div>${title}</div><div style="font-size:0.8rem; opacity:0.9">${sub}</div></div><i class="fas fa-check"></i></div>`;
 }
 
 // --- PRINCIPAL ---
@@ -281,12 +260,11 @@ function sendOrder() {
     items.forEach(i => msg += `▪️ *${i.nombre}* (x${i.qty})%0A`);
     msg += `%0A📦 *Total unidades:* ${document.getElementById('total-items').innerText}`;
     if (storedCode && storedCode !== 'CASI') {
-        let promoText = "";
-        if (storedCode === 'NAP15') promoText = "Navidad Mágica (-15%)";
-        if (storedCode === 'NAP10') promoText = "Dulce Navidad (-10%)";
-        if (storedCode === 'NAP5') promoText = "Galletita Feliz (-5%)";
-        msg += `%0A%0A🎁 *CÓDIGO GANADO:* ${promoText} [${storedCode}]`;
+        if (CONFIG.promoTexts[storedCode]) {
+            const { title, sub } = CONFIG.promoTexts[storedCode];
+            msg += `%0A%0A🎁 *CÓDIGO GANADO:* ${title} (${sub}) [${storedCode}]`;
+        }
     }
     msg += "%0A%0AQuedo a la espera de confirmación. ¡Gracias!";
-    window.open(`https://wa.me/34624416475?text=${msg}`, '_blank');
+    window.open(`https://wa.me/${CONFIG.whatsappNumber}?text=${msg}`, '_blank');
 }
