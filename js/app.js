@@ -117,6 +117,17 @@ let hasSpun = localStorage.getItem('zorro_has_spun');
 
 function checkWheelState() {
     const btn = document.getElementById('wheel-trigger');
+    const now = new Date();
+    const expirationDate = new Date('2025-12-01T00:00:00');
+
+    if (now >= expirationDate) {
+        // Expired: Clear cache and hide wheel
+        localStorage.removeItem('zorro_promo_code');
+        localStorage.removeItem('zorro_has_spun');
+        if (btn) btn.style.display = 'none';
+        return;
+    }
+
     if (hasSpun === 'true') {
         btn.classList.add('hidden');
         if (storedCode && storedCode !== 'CASI') showPromoInCart(storedCode);
