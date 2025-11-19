@@ -3,7 +3,7 @@
  * Edita este archivo para cambiar productos, premios, fechas y textos.
  */
 
-const CONFIG = {
+var CONFIG = {
     // --- DATOS DE CONTACTO ---
     whatsappNumber: "34624416475", // Número de teléfono para pedidos (sin +)
 
@@ -20,7 +20,7 @@ const CONFIG = {
 
 // --- LISTA DE PRODUCTOS ---
 // Añade, borra o edita productos aquí.
-const productos = [
+var productos = [
     {
         id: 1,
         nombre: "Roscos de Vino",
@@ -99,7 +99,7 @@ const productos = [
 // id: Código del premio (o 'CASI' para perder)
 // label: Texto que se muestra en la ruleta
 // color: Color del segmento
-const prizes = [
+var prizes = [
     { id: 'NAP15', label: '15% Dto - NAP15', color: '#FFD700' },
     { id: 'CASI', label: 'Casi Casi... 🥺', color: '#ff4757' },
     { id: 'NAP10', label: '10% Dto - NAP10', color: '#2ed573' },

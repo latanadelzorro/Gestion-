@@ -1,11 +1,31 @@
 /* --- PRELOADER LOGIC --- */
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        const loader = document.getElementById('preloader');
+const hidePreloader = () => {
+    console.log('Attempting to hide preloader');
+    const loader = document.getElementById('preloader');
+    if (loader) {
         loader.style.opacity = '0';
         loader.style.visibility = 'hidden';
-    }, 1200); // Tiempo de gracia para ver el logo
-});
+        loader.style.display = 'none';
+        console.log('Preloader hidden');
+    } else {
+        console.warn('Preloader element not found');
+    }
+};
+
+// Failsafe: Force hide after 3 seconds no matter what
+setTimeout(hidePreloader, 3000);
+
+if (document.readyState === 'complete') {
+    setTimeout(hidePreloader, 1200);
+} else {
+    window.addEventListener('load', () => setTimeout(hidePreloader, 1200));
+}
+
+// Safety check
+if (typeof CONFIG === 'undefined' || typeof productos === 'undefined') {
+    console.error("CRITICAL: config.js not loaded!");
+    alert("Error de carga: config.js no encontrado. Recarga la página.");
+}
 
 /* --- MODO OSCURO LOGICA --- */
 function toggleTheme() {
@@ -29,8 +49,22 @@ function updateThemeIcon(isDark) {
 /* --- DATOS EXTENDIDOS --- */
 // Los productos ahora se cargan desde js/config.js
 
-let cart = JSON.parse(localStorage.getItem('zorro_cart_v2')) || {};
-let favorites = JSON.parse(localStorage.getItem('zorro_favs')) || [];
+let cart = {};
+let favorites = [];
+
+try {
+    cart = JSON.parse(localStorage.getItem('zorro_cart_v2')) || {};
+} catch (e) {
+    console.error("Error parsing cart:", e);
+    localStorage.removeItem('zorro_cart_v2');
+}
+
+try {
+    favorites = JSON.parse(localStorage.getItem('zorro_favs')) || [];
+} catch (e) {
+    console.error("Error parsing favorites:", e);
+    localStorage.removeItem('zorro_favs');
+}
 
 /* --- FUNCIONES FAVORITOS --- */
 function toggleFav(id, event) {
