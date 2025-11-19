@@ -1,3 +1,6 @@
+// Versión de la web
+console.log('🦊 La Tana del Zorro - Versión: 0.0.0.1');
+
 /* --- PRELOADER LOGIC --- */
 const hidePreloader = () => {
     console.log('Attempting to hide preloader');
