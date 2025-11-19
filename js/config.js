@@ -27,7 +27,7 @@ var productos = [
         desc: "Receta montoreña con vino tinto y ajonjolí.",
         cat: ["Tradicional", "Navideño"],
         img: "img/roscos-vino.jpeg",
-        alergenos: ["Gluten", "Sulfitos", "Sésamo"]
+        alergenos: ["Gluten (Trigo)", "Sulfitos (Vino)", "Frutos de Cáscara", "Sésamo"]
     },
     {
         id: 2,
@@ -35,7 +35,7 @@ var productos = [
         desc: "Capas de mascarpone, bizcocho y café.",
         cat: ["Tradicional"],
         img: "img/tiramisu.jpg",
-        alergenos: ["Lácteos", "Gluten", "Huevo"]
+        alergenos: ["Gluten (Trigo)", "Huevo", "Lácteos (Mascarpone)", "Sulfitos (Marsala)"]
     },
     {
         id: 3,
@@ -43,7 +43,7 @@ var productos = [
         desc: "De canela y limón. Textura suave.",
         cat: ["Navideño"],
         img: "img/mantecados.jpeg",
-        alergenos: ["Gluten", "Frutos Secos"]
+        alergenos: ["Gluten (Trigo)", "Frutos de Cáscara (Almendra)", "Lácteos"]
     },
     {
         id: 4,
@@ -51,7 +51,7 @@ var productos = [
         desc: "Divertidas y crujientes con miel.",
         cat: ["Navideño"],
         img: "img/galletas gengibre.jpeg",
-        alergenos: ["Gluten", "Huevo"]
+        alergenos: ["Gluten (Trigo)", "Huevo", "Lácteos (Mantequilla)", "Sulfitos"]
     },
     {
         id: 5,
@@ -59,7 +59,7 @@ var productos = [
         desc: "Mantequilla pura y caramelizado.",
         cat: ["Tradicional"],
         img: "img/palmeras.avif",
-        alergenos: ["Gluten", "Lácteos"]
+        alergenos: ["Gluten (Trigo)", "Lácteos (Mantequilla)"]
     },
     {
         id: 6,
@@ -67,7 +67,7 @@ var productos = [
         desc: "Fritos del día, tiernos y rebozados.",
         cat: ["Tradicional"],
         img: "img/roscosdeazucar.jpg",
-        alergenos: ["Gluten", "Huevo"]
+        alergenos: ["Gluten (Trigo)", "Huevo", "Lácteos"]
     },
     {
         id: 7,
@@ -75,7 +75,7 @@ var productos = [
         desc: "Clásico con vino, anís y baño de miel.",
         cat: ["Semana Santa"],
         img: "img/pestiños.jpg",
-        alergenos: ["Gluten", "Sulfitos"]
+        alergenos: ["Gluten (Trigo)", "Sésamo", "Frutos de Cáscara"]
     },
     {
         id: 8,
@@ -83,7 +83,7 @@ var productos = [
         desc: "Esponjosas, con alto copete, aceite de oliva y ralladura de limón.",
         cat: ["Tradicional"],
         img: "img/macdalenas.jpeg",
-        alergenos: ["Gluten", "Huevo"]
+        alergenos: ["Gluten (Trigo)", "Huevo", "Lácteos"]
     },
     {
         id: 9,
@@ -91,7 +91,7 @@ var productos = [
         desc: "Crujientes por fuera y tiernas por dentro, con generosos chips de chocolate.",
         cat: ["Tradicional"],
         img: "img/cookies.png",
-        alergenos: ["Gluten", "Huevo", "Lácteos", "Soja"]
+        alergenos: ["Gluten (Trigo)", "Huevo", "Lácteos (Mantequilla y Chocolate)", "Soja (Lecitina)"]
     },
 ];
 
