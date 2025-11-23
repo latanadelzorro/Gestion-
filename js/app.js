@@ -158,7 +158,24 @@ function spinWheel() {
     if (hasSpun === 'true') return;
     const btn = document.getElementById('btn-spin');
     btn.disabled = true; btn.innerText = "Girando...";
-    const winnerIndex = Math.floor(Math.random() * prizes.length);
+    // Lógica de probabilidades ponderada
+    // CASI: 50%, NAP5: 30%, NAP10: 15%, NAP15: 5%
+    const rand = Math.random();
+    let winningId = 'CASI';
+
+    if (rand < 0.50) winningId = 'CASI';
+    else if (rand < 0.80) winningId = 'NAP5';
+    else if (rand < 0.95) winningId = 'NAP10';
+    else winningId = 'NAP15';
+
+    // Buscar qué segmentos (índices) corresponden al premio ganado
+    const candidates = [];
+    prizes.forEach((p, i) => {
+        if (p.id === winningId) candidates.push(i);
+    });
+
+    // Elegir uno de los segmentos válidos al azar para la animación
+    const winnerIndex = candidates[Math.floor(Math.random() * candidates.length)];
     const winner = prizes[winnerIndex];
     const segmentAngle = (winnerIndex * 45) + 22.5;
     const spins = 5;
