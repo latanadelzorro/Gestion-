@@ -71,11 +71,11 @@ var productos = [
     },
     {
         id: 7,
-        nombre: "Pestiños de Miel",
-        desc: "Clásico con vino, anís y baño de miel.",
-        cat: ["Semana Santa"],
-        img: "img/pestiños.jpg",
-        alergenos: ["Gluten (Trigo)", "Sésamo", "Frutos de Cáscara"]
+        nombre: "Hojaldrinas",
+        desc: "Deliciosas capas de hojaldre con un toque de naranja y vino.",
+        cat: ["Navideño", "Tradicional"],
+        img: "img/hojaldrinas.jpeg",
+        alergenos: ["Gluten (Trigo)", "Lácteos (Mantequilla)", "Sulfitos (Vino)"]
     },
     {
         id: 8,
