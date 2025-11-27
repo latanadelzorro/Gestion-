@@ -112,7 +112,7 @@ function openProduct(id) {
                 if (match) {
                     const packName = match[1];
                     const packPrice = parseFloat(match[2].replace(',', '.'));
-                    return `<div class="pack-item" onclick="addToCart(${p.id}, this, '${packName}', ${packPrice})" style="cursor:pointer;">
+                    return `<div class="pack-item" onclick="addToCart(${p.id}, this, '${packName}', ${packPrice}); setTimeout(closeProduct, 300);" style="cursor:pointer;">
                                                 <span class="pack-name">${packName}</span>
                                                 <span class="pack-price">${match[2]}€</span>
                                                 <i class="fas fa-plus-circle" style="color:var(--primary); margin-left:10px;"></i>
