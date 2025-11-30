@@ -66,7 +66,7 @@ var productos = [
         cat: ["Tradicional"],
         img: "img/macdalenas.jpeg",
         alergenos: ["Gluten (Trigo)", "Huevo", "Lácteos"],
-        packs: "Pack 12 (15,00€)"
+        packs: "Pack 12 (5,00€)"
     },
     {
         id: 9,
