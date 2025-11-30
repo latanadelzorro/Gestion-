@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>La Tana del Zorro - Gestión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #D97706;
+            --primary-dark: #B45309;
+            --secondary: #059669;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --gray: #6B7280;
+            --border: #E5E7EB;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        body.dark-mode {
+            --light: #1F2937;
+            --dark: #F9FAFB;
+            --border: #374151;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            touch-action: manipulation;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark-mode .header {
+            background: #111827;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .btn-theme {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            overflow-x: auto;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 60px;
+            z-index: 99;
+        }
+
+        body.dark-mode .nav-tabs {
+            background: #111827;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 1rem;
+            border: none;
+            background: transparent;
+            color: var(--gray);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-btn i {
+            font-size: 1.2rem;
+        }
+
+        .tab-btn span {
+            font-size: 0.75rem;
+        }
+
+        .main-content {
+            padding: 1rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.65rem 1rem;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        body.dark-mode .btn-secondary {
+            background: #374151;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        body.dark-mode .kpi-card {
+            background: #1F2937;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .kpi-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+        }
+
+        body.dark-mode .chart-card {
+            background: #1F2937;
+        }
+
+        .chart-card h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        body.dark-mode table {
+            background: #1F2937;
+        }
+
+        th,
+        td {
+            padding: 0.75rem 0.5rem;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        th {
+            background: var(--light);
+            font-weight: 600;
+        }
+
+        body.dark-mode th {
+            background: #111827;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3B82F6;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: auto;
+        }
+
+        body.dark-mode .modal-content {
+            background: #1F2937;
+        }
+
+        .modal-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1rem;
+        }
+
+        .modal-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            background: white;
+            color: var(--dark);
+        }
+
+        body.dark-mode .form-group input,
+        body.dark-mode .form-group textarea,
+        body.dark-mode .form-group select {
+            background: #374151;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        .sale-products {
+            background: var(--light);
+            border-radius: var(--radius);
+            padding: 0.75rem;
+            margin: 0.75rem 0;
+        }
+
+        .sale-product-item {
+            background: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark-mode .sale-product-item {
+            background: #374151;
+        }
+
+        .sale-totals {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin: 1rem 0;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+        }
+
+        .total-main {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--primary);
+            border-top: 2px solid var(--border);
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+        }
+
+        select,
+        input,
+        textarea {
+            font-size: 16px !important;
+            /* Prevenir zoom en iOS */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-paw"></i>
+            <span>El Zorro</span>
+        </div>
+        <button class="btn-theme" onclick="toggleTheme()">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </div>
+
+    <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('dashboard')" data-tab="dashboard">
+            <i class="fas fa-chart-line"></i>
+            <span>Dashboard</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('products')" data-tab="products">
+            <i class="fas fa-box"></i>
+            <span>Productos</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('clients')" data-tab="clients">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('sales')" data-tab="sales">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Ventas</span>
+        </button>
+    </nav>
+
+    <main class="main-content">
+        <!-- Dashboard -->
+        <section id="dashboard" class="tab-content active">
+            <div class="section-header">
+                <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
+                <select id="dashboard-period" onchange="updateDashboard()">
+                    <option value="7">7 días</option>
+                    <option value="30" selected>30 días</option>
+                    <option value="90">90 días</option>
+                </select>
+            </div>
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Ingresos</div>
+                    <div class="kpi-value" id="kpi-revenue">0€</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Ventas</div>
+                    <div class="kpi-value" id="kpi-sales">0</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Ticket Medio</div>
+                    <div class="kpi-value" id="kpi-avg">0€</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Margen</div>
+                    <div class="kpi-value" id="kpi-margin">0%</div>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>Ventas</h3>
+                <canvas id="salesChart" height="200"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Top Productos</h3>
+                <canvas id="productsChart" height="200"></canvas>
+            </div>
+        </section>
+
+        <!-- Products -->
+        <section id="products" class="tab-content">
+            <div class="section-header">
+                <h2><i class="fas fa-box"></i> Productos</h2>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportProductsExcel()">
+                        <i class="fas fa-download"></i> Excel
+                    </button>
+                    <button class="btn btn-primary" onclick="openProductModal()">
+                        <i class="fas fa-plus"></i> Nuevo
+                    </button>
+                </div>
+            </div>
+            <div id="products-list"></div>
+        </section>
+
+        <!-- Clients -->
+        <section id="clients" class="tab-content">
+            <div class="section-header">
+                <h2><i class="fas fa-users"></i> Clientes</h2>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportClientsExcel()">
+                        <i class="fas fa-download"></i> Excel
+                    </button>
+                    <button class="btn btn-primary" onclick="openClientModal()">
+                        <i class="fas fa-plus"></i> Nuevo
+                    </button>
+                </div>
+            </div>
+            <div id="clients-list"></div>
+        </section>
+
+        <!-- Sales -->
+        <section id="sales" class="tab-content">
+            <div class="section-header">
+                <h2><i class="fas fa-shopping-cart"></i> Ventas</h2>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportSalesExcel()">
+                        <i class="fas fa-download"></i> Excel
+                    </button>
+                    <button class="btn btn-primary" onclick="openSaleModal()">
+                        <i class="fas fa-plus"></i> Nueva
+                    </button>
+                </div>
+            </div>
+            <div id="sales-list"></div>
+        </section>
+    </main>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="product-modal-title">Nuevo Producto</h3>
+                <button onclick="closeProductModal()"
+                    style="background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="product-id">
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" id="product-name">
+                </div>
+                <div class="form-group">
+                    <label>Precio (€) *</label>
+                    <input type="number" step="0.01" id="product-price">
+                </div>
+                <div class="form-group">
+                    <label>Coste (€)</label>
+                    <input type="number" step="0.01" id="product-cost">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeProductModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveProduct()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Modal -->
+    <div id="clientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nuevo Cliente</h3>
+                <button onclick="closeClientModal()"
+                    style="background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="client-id">
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" id="client-name">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="tel" id="client-phone">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeClientModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveClient()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sale Modal -->
+    <div id="saleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nueva Venta</h3>
+                <button onclick="closeSaleModal()"
+                    style="background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Cliente *</label>
+                    <select id="sale-client"></select>
+                </div>
+                <div class="form-group">
+                    <label>Producto *</label>
+                    <select id="sale-product-select"></select>
+                </div>
+                <div class="form-group">
+                    <label>Cantidad</label>
+                    <input type="number" id="sale-product-qty" value="1" min="1">
+                </div>
+                <button class="btn btn-secondary" onclick="addProductToSale()" style="width:100%;margin-bottom:1rem;">
+                    <i class="fas fa-plus"></i> Añadir Producto
+                </button>
+                <div id="sale-products-list" class="sale-products"></div>
+                <div class="sale-totals">
+                    <div class="total-main">
+                        <span>TOTAL:</span>
+                        <span id="sale-total">0,00€</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Estado *</label>
+                    <select id="sale-payment-status">
+                        <option value="paid">Pagado</option>
+                        <option value="partial">Parcial</option>
+                        <option value="pending">Pendiente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Método</label>
+                    <select id="sale-payment-method">
+                        <option value="cash">Efectivo</option>
+                        <option value="card">Tarjeta</option>
+                        <option value="transfer">Transferencia</option>
+                        <option value="bizum">Bizum</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSaleModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveSale()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span></span>
+    </div>
+
+    <script>
+        // Storage
+        const Storage = {
+            get(key) {
+                try {
+                    return JSON.parse(localStorage.getItem(key)) || [];
+                } catch { return []; }
+            },
+            set(key, val) {
+                localStorage.setItem(key, JSON.stringify(val));
+            }
+        };
+
+        let products = Storage.get('products');
+        let clients = Storage.get('clients');
+        let sales = Storage.get('sales');
+        let currentSaleProducts = [];
+        let charts = {};
+
+        // Navigation
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+
+            if (tab === 'dashboard') updateDashboard();
+            if (tab === 'products') renderProducts();
+            if (tab === 'clients') renderClients();
+            if (tab === 'sales') renderSales();
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('theme-icon');
+            icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.querySelector('span').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Products
+        function renderProducts() {
+            const container = document.getElementById('products-list');
+            if (!products.length) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-box"></i><p>No hay productos</p></div>';
+                return;
+            }
+            let html = '<table><thead><tr><th>Producto</th><th>Precio</th><th></th></tr></thead><tbody>';
+            products.forEach(p => {
+                html += `<tr>
+                    <td><strong>${p.name}</strong></td>
+                    <td>${p.price.toFixed(2)}€</td>
+                    <td class="table-actions">
+                        <button class="btn-icon" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-icon" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+            container.innerHTML = html + '</tbody></table>';
+        }
+
+        function openProductModal(id = null) {
+            document.getElementById('product-id').value = id || '';
+            if (id) {
+                const p = products.find(x => x.id === id);
+                document.getElementById('product-name').value = p.name;
+                document.getElementById('product-price').value = p.price;
+                document.getElementById('product-cost').value = p.cost || '';
+            } else {
+                document.getElementById('product-name').value = '';
+                document.getElementById('product-price').value = '';
+                document.getElementById('product-cost').value = '';
+            }
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        function saveProduct() {
+            const name = document.getElementById('product-name').value.trim();
+            const price = parseFloat(document.getElementById('product-price').value);
+            if (!name || !price) return showToast('Completa los campos');
+
+            const id = document.getElementById('product-id').value;
+            const data = {
+                name,
+                price,
+                cost: parseFloat(document.getElementById('product-cost').value) || 0
+            };
+
+            if (id) {
+                const idx = products.findIndex(p => p.id == id);
+                products[idx] = { ...products[idx], ...data };
+            } else {
+                products.push({ ...data, id: Date.now() });
+            }
+
+            Storage.set('products', products);
+            closeProductModal();
+            renderProducts();
+            showToast('Producto guardado');
+        }
+
+        function editProduct(id) {
+            openProductModal(id);
+        }
+
+        function deleteProduct(id) {
+            if (confirm('¿Eliminar producto?')) {
+                products = products.filter(p => p.id !== id);
+                Storage.set('products', products);
+                renderProducts();
+                showToast('Producto eliminado');
+            }
+        }
+
+        // Clients
+        function renderClients() {
+            const container = document.getElementById('clients-list');
+            if (!clients.length) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>No hay clientes</p></div>';
+                return;
+            }
+            let html = '<table><thead><tr><th>Cliente</th><th>Tel</th><th></th></tr></thead><tbody>';
+            clients.forEach(c => {
+                html += `<tr>
+                    <td><strong>${c.name}</strong></td>
+                    <td>${c.phone || '-'}</td>
+                    <td class="table-actions">
+                        <button class="btn-icon" onclick="editClient(${c.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-icon" onclick="deleteClient(${c.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+            container.innerHTML = html + '</tbody></table>';
+        }
+
+        function openClientModal(id = null) {
+            document.getElementById('client-id').value = id || '';
+            if (id) {
+                const c = clients.find(x => x.id === id);
+                document.getElementById('client-name').value = c.name;
+                document.getElementById('client-phone').value = c.phone || '';
+            } else {
+                document.getElementById('client-name').value = '';
+                document.getElementById('client-phone').value = '';
+            }
+            document.getElementById('clientModal').classList.add('active');
+        }
+
+        function closeClientModal() {
+            document.getElementById('clientModal').classList.remove('active');
+        }
+
+        function saveClient() {
+            const name = document.getElementById('client-name').value.trim();
+            if (!name) return showToast('Ingresa un nombre');
+
+            const id = document.getElementById('client-id').value;
+            const data = {
+                name,
+                phone: document.getElementById('client-phone').value.trim()
+            };
+
+            if (id) {
+                const idx = clients.findIndex(c => c.id == id);
+                clients[idx] = { ...clients[idx], ...data };
+            } else {
+                clients.push({ ...data, id: Date.now() });
+            }
+
+            Storage.set('clients', clients);
+            closeClientModal();
+            renderClients();
+            showToast('Cliente guardado');
+        }
+
+        function editClient(id) {
+            openClientModal(id);
+        }
+
+        function deleteClient(id) {
+            if (confirm('¿Eliminar cliente?')) {
+                clients = clients.filter(c => c.id !== id);
+                Storage.set('clients', clients);
+                renderClients();
+                showToast('Cliente eliminado');
+            }
+        }
+
+        // Sales
+        function renderSales() {
+            const container = document.getElementById('sales-list');
+            if (!sales.length) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-shopping-cart"></i><p>No hay ventas</p></div>';
+                return;
+            }
+            let html = '<table><thead><tr><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead><tbody>';
+            sales.slice().reverse().forEach(s => {
+                const client = clients.find(c => c.id === s.clientId);
+                const badge = { paid: 'success', partial: 'warning', pending: 'danger' }[s.paymentStatus];
+                html += `<tr>
+                    <td><strong>${client ? client.name : 'N/A'}</strong><br>
+                        <small>${new Date(s.datetime).toLocaleDateString()}</small>
+                    </td>
+                    <td>${s.total.toFixed(2)}€</td>
+                    <td><span class="badge badge-${badge}">${s.paymentStatus}</span></td>
+                </tr>`;
+            });
+            container.innerHTML = html + '</tbody></table>';
+        }
+
+        function openSaleModal() {
+            currentSaleProducts = [];
+            const select = document.getElementById('sale-client');
+            select.innerHTML = '<option value="">Seleccionar...</option>';
+            clients.forEach(c => select.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+
+            const pselect = document.getElementById('sale-product-select');
+            pselect.innerHTML = '<option value="">Seleccionar...</option>';
+            products.forEach(p => pselect.innerHTML += `<option value="${p.id}">${p.name} - ${p.price.toFixed(2)}€</option>`);
+
+            updateSaleProductsList();
+            document.getElementById('saleModal').classList.add('active');
+        }
+
+        function closeSaleModal() {
+            document.getElementById('saleModal').classList.remove('active');
+        }
+
+        function addProductToSale() {
+            const pid = parseInt(document.getElementById('sale-product-select').value);
+            const qty = parseInt(document.getElementById('sale-product-qty').value) || 1;
+            if (!pid) return showToast('Selecciona producto');
+
+            const p = products.find(x => x.id === pid);
+            const existing = currentSaleProducts.find(x => x.id === pid);
+            if (existing) {
+                existing.quantity += qty;
+            } else {
+                currentSaleProducts.push({ id: pid, name: p.name, price: p.price, cost: p.cost || 0, quantity: qty });
+            }
+            updateSaleProductsList();
+        }
+
+        function removeSaleProduct(id) {
+            currentSaleProducts = currentSaleProducts.filter(p => p.id !== id);
+            updateSaleProductsList();
+        }
+
+        function updateSaleProductsList() {
+            const container = document.getElementById('sale-products-list');
+            if (!currentSaleProducts.length) {
+                container.innerHTML = '<p style="text-align:center;color:var(--gray);padding:1rem;">Sin productos</p>';
+                document.getElementById('sale-total').textContent = '0,00€';
+                return;
+            }
+            let html = '';
+            let total = 0;
+            currentSaleProducts.forEach(p => {
+                const sub = p.price * p.quantity;
+                total += sub;
+                html += `<div class="sale-product-item">
+                    <div><strong>${p.name}</strong><br><small>${p.price.toFixed(2)}€ × ${p.quantity}</small></div>
+                    <button class="btn-icon" onclick="removeSaleProduct(${p.id})"><i class="fas fa-times"></i></button>
+                </div>`;
+            });
+            container.innerHTML = html;
+            document.getElementById('sale-total').textContent = total.toFixed(2) + '€';
+        }
+
+        function saveSale() {
+            const clientId = parseInt(document.getElementById('sale-client').value);
+            if (!clientId) return showToast('Selecciona cliente');
+            if (!currentSaleProducts.length) return showToast('Añade productos');
+
+            const total = currentSaleProducts.reduce((s, p) => s + (p.price * p.quantity), 0);
+            const totalCost = currentSaleProducts.reduce((s, p) => s + (p.cost * p.quantity), 0);
+
+            sales.push({
+                id: Date.now(),
+                clientId,
+                datetime: new Date().toISOString(),
+                products: currentSaleProducts,
+                total,
+                totalCost,
+                paymentStatus: document.getElementById('sale-payment-status').value,
+                paymentMethod: document.getElementById('sale-payment-method').value
+            });
+
+            Storage.set('sales', sales);
+            closeSaleModal();
+            renderSales();
+            showToast('Venta guardada');
+        }
+
+        // Dashboard
+        function updateDashboard() {
+            const days = parseInt(document.getElementById('dashboard-period').value);
+            const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+            const filtered = sales.filter(s => new Date(s.datetime) >= cutoff);
+
+            const revenue = filtered.reduce((s, x) => s + x.total, 0);
+            const cost = filtered.reduce((s, x) => s + (x.totalCost || 0), 0);
+            const margin = revenue > 0 ? ((revenue - cost) / revenue * 100) : 0;
+
+            document.getElementById('kpi-revenue').textContent = revenue.toFixed(2) + '€';
+            document.getElementById('kpi-sales').textContent = filtered.length;
+            document.getElementById('kpi-avg').textContent = (filtered.length ? revenue / filtered.length : 0).toFixed(2) + '€';
+            document.getElementById('kpi-margin').textContent = margin.toFixed(1) + '%';
+
+            updateCharts(filtered);
+        }
+
+        function updateCharts(filtered) {
+            // Sales chart
+            const byDate = {};
+            filtered.forEach(s => {
+                const d = new Date(s.datetime).toLocaleDateString();
+                byDate[d] = (byDate[d] || 0) + s.total;
+            });
+            const dates = Object.keys(byDate).sort();
+            const totals = dates.map(d => byDate[d]);
+
+            if (charts.sales) charts.sales.destroy();
+            const ctx1 = document.getElementById('salesChart');
+            charts.sales = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Ventas',
+                        data: totals,
+                        borderColor: '#D97706',
+                        backgroundColor: 'rgba(217,119,6,0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Products chart
+            const prods = {};
+            filtered.forEach(s => {
+                s.products.forEach(p => {
+                    prods[p.name] = (prods[p.name] || 0) + p.quantity;
+                });
+            });
+            const top = Object.entries(prods).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+            if (charts.products) charts.products.destroy();
+            const ctx2 = document.getElementById('productsChart');
+            charts.products = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: top.map(x => x[0]),
+                    datasets: [{
+                        label: 'Unidades',
+                        data: top.map(x => x[1]),
+                        backgroundColor: '#D97706'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // Excel Export
+        function exportProductsExcel() {
+            if (!products.length) return showToast('No hay productos');
+            const data = products.map(p => ({
+                'Nombre': p.name,
+                'Precio': p.price,
+                'Coste': p.cost || 0
+            }));
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Productos');
+            XLSX.writeFile(wb, `productos_${new Date().toISOString().split('T')[0]}.xlsx`);
+            showToast('Exportado');
+        }
+
+        function exportClientsExcel() {
+            if (!clients.length) return showToast('No hay clientes');
+            const data = clients.map(c => ({
+                'Nombre': c.name,
+                'Teléfono': c.phone || ''
+            }));
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Clientes');
+            XLSX.writeFile(wb, `clientes_${new Date().toISOString().split('T')[0]}.xlsx`);
+            showToast('Exportado');
+        }
+
+        function exportSalesExcel() {
+            if (!sales.length) return showToast('No hay ventas');
+            const data = [];
+            sales.forEach(s => {
+                const c = clients.find(x => x.id === s.clientId);
+                data.push({
+                    'Fecha': new Date(s.datetime).toLocaleDateString(),
+                    'Cliente': c ? c.name : 'N/A',
+                    'Total': s.total,
+                    'Estado': s.paymentStatus,
+                    'Método': s.paymentMethod
+                });
+            });
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Ventas');
+            XLSX.writeFile(wb, `ventas_${new Date().toISOString().split('T')[0]}.xlsx`);
+            showToast('Exportado');
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            renderClients();
+            renderSales();
+            updateDashboard();
+        });
+    </script>
+</body>
+
+</html>
