@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panadería Pro - Gestión Artesanal</title>
+    <meta name="description" content="La mejor app para tu panadería. Hecha con cariño para ti.">
+    <link rel="manifest" href="data:application/manifest+json,{
+      \"name\":\"Panadería Pro\",
+      \"short_name\":\"PanPro\",
+      \"start_url\":\".\",
+      \"display\":\"standalone\",
+      \"background_color\":\"#ffffff\",
+      \"theme_color\":\"#d97706\",
+      \"icons\":[
+        {\"src\":\"https://panaderiapro.es/icon-192.png\",\"sizes\":\"192x192\",\"type\":\"image/png\"},
+        {\"src\":\"https://panaderiapro.es/icon-512.png\",\"sizes\":\"512x512\",\"type\":\"image/png\"}
+      ]
+    }">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>Pan</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #d97706; --primary-dark: #b45309; --secondary: #1e293b; --accent: #f59e0b;
+            --background: #f8fafc; --surface: #ffffff; --text-main: #0f172a; --text-muted: #64748b;
+            --border: #e2e8f0; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --info: #3b82f6;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1); --radius: 0.75rem; --font-main: 'Outfit', sans-serif;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #0f172a; --surface: #1e293b; --text-main: #f1f5f9; --text-muted: #94a3b8;
+                --border: #334155;
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html,body { height: 100%; font-family: var(--font-main); background: var(--background); color: var(--text-main); }
+        body { display: flex; overflow: hidden; }
+        #sidebar { width: 260px; background: var(--secondary); color: white; padding: 1.5rem; transition: transform 0.3s ease; z-index: 50; }
+        #main-content { flex: 1; overflow-y: auto; padding: 2rem; }
+        .brand { font-size: 1.6rem; font-weight: 700; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.75rem; color: var(--accent); }
+        .nav-item { padding: 0.875rem 1rem; border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; gap: 0.75rem; color: #94a3b8; transition: all 0.2s; font-weight: 500; }
+        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); color: white; }
+        .nav-item.active { background: linear-gradient(90deg, rgba(217,119,6,0.25), rgba(250,204,21,0.1)); }
+        .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.625rem 1.25rem; border-radius: var(--radius); font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.875rem; }
+        .card { background: var(--surface); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .grid-dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: var(--text-main); }
+        .stat-label { display: flex; flex-direction: column; }
+        .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 0.5rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 1rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+        th { background: var(--background); color: var(--text-muted); font-weight: 600; font-size: 0.875rem; }
+        .form-control { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text-main); }
+        .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(217,119,6,0.15); }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal { background: var(--surface); width: 95%; max-width: 1000px; max-height: 95vh; border-radius: var(--radius); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden; display: flex; flex-direction: column; }
+        .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--background); }
+        .modal-body { padding: 1.5rem; overflow-y: auto; flex: 1; }
+        .modal-footer { padding: 1.25rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 1rem; background: var(--background); }
+        .hidden { display: none !important; }
+        .badge { padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; text-transform: capitalize; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+        .badge-info { background: #dbeafe; color: #1e40af; }
+        .badge-primary { background: #fed7aa; color: #9a3412; }
+        .menu-toggle { display: none; position: fixed; top: 1rem; right: 1rem; z-index: 60; background: var(--surface); border: 1px solid var(--border); padding: 0.75rem; border-radius: 50%; width: 56px; height: 56px; box-shadow: var(--shadow); }
+        #toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #16a34a; color: white; padding: 1rem 1.5rem; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: translateY(100px); opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; font-weight: 600; }
+        #toast.show { transform: translateY(0); opacity: 1; }
+        .chart-container { height: 320px; width: 100%; }
+        .print-only { display: none; }
+        @media print {
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 2rem; background: white; color: black; }
+            .no-print { display: none !important; }
+        }
+        @media (max-width: 768px) {
+            #sidebar { position: fixed; left: -260px; top: 0; height: 100%; z-index: 55; }
+            #sidebar.active { left: 0; }
+            .menu-toggle { display: flex; align-items: center; justify-content: center; }
+            #main-content { padding: 1rem; }
+            .chart-container { height: 260px; }
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-toggle no-print" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <nav id="sidebar">
+        <div class="brand">
+            <span>Panadería Pro</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active" data-view="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</li>
+            <li class="nav-item" data-view="orders"><i class="fas fa-receipt"></i> Pedidos</li>
+            <li class="nav-item" data-view="products"><i class="fas fa-cookie"></i> Productos</li>
+            <li class="nav-item" data-view="inventory"><i class="fas fa-wheat-awn"></i> Inventario</li>
+            <li class="nav-item" data-view="promos"><i class="fas fa-gift"></i> Packs & Descuentos</li>
+            <li class="nav-item" data-view="customers"><i class="fas fa-users"></i> Clientes</li>
+            <li class="nav-item" data-view="settings"><i class="fas fa-cog"></i> Configuración</li>
+        </ul>
+    </nav>
+
+    <main id="main-content">
+        <section id="view-dashboard" class="view"></section>
+        <section id="view-orders" class="view hidden"></section>
+        <section id="view-products" class="view hidden"></section>
+        <section id="view-inventory" class="view hidden"></section>
+        <section id="view-promos" class="view hidden"></section>
+        <section id="view-customers" class="view hidden"></section>
+        <section id="view-settings" class="view hidden"></section>
+    </main>
+
+    <div id="toast">¡Guardado!</div>
+    <div id="print-area" class="hidden"></div>
+
+    <div id="modal-customer" class="modal-overlay"></div>
+    <div id="modal-ingredient" class="modal-overlay"></div>
+    <div id="modal-product" class="modal-overlay"></div>
+    <div id="modal-promo" class="modal-overlay"></div>
+    <div id="modal-order" class="modal-overlay"></div>
+
+    <script>
+        // ====== UTILIDADES ======
+        const escapeHTML = str => String(str ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+        const toast = (msg, type='success') => {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.background = type === 'error' ? '#dc2626' : '#16a34a';
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        };
+        const clone = obj => (window.structuredClone ? structuredClone(obj) : JSON.parse(JSON.stringify(obj)));
+
+        const Utils = {
+            uuid: () => crypto.randomUUID(),
+            formatCurrency: n => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(Number(n) || 0),
+            formatDate: d => new Date(d).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+            sum: (arr, key) => arr.reduce((a, b) => a + (Number(b[key]) || 0), 0),
+            round: (value, decimals = 2) => Number((Number(value) || 0).toFixed(decimals)),
+        };
+
+        const DEFAULT_DATA = {
+            customers: [],
+            products: [],
+            orders: [],
+            ingredients: [],
+            promos: [],
+            inventoryMovements: []
+        };
+
+        // ====== STORAGE ======
+        class Store {
+            constructor() { this.data = this.ensureSchema(this.load()); }
+            load() {
+                try {
+                    const saved = localStorage.getItem('panaderia_pro_2025');
+                    return saved ? JSON.parse(saved) : clone(DEFAULT_DATA);
+                } catch { return clone(DEFAULT_DATA); }
+            }
+            ensureSchema(raw = {}) {
+                const data = { ...clone(DEFAULT_DATA), ...raw };
+                data.customers = (data.customers || []).map(c => ({
+                    balance: Number(c.balance) || 0,
+                    creditLimit: c.creditLimit ?? null,
+                    paymentHistory: Array.isArray(c.paymentHistory) ? c.paymentHistory : [],
+                    notes: c.notes || '',
+                    ...c
+                }));
+                data.products = (data.products || []).map(p => ({
+                    recipe: Array.isArray(p.recipe) ? p.recipe : [],
+                    category: p.category || 'general',
+                    costs: Array.isArray(p.costs) ? p.costs : [],
+                    ...p
+                }));
+                data.orders = (data.orders || []).map(o => ({
+                    discounts: Array.isArray(o.discounts) ? o.discounts : [],
+                    paymentMethod: o.paymentMethod || 'cash',
+                    promoId: o.promoId || null,
+                    summary: o.summary || null,
+                    outstanding: Number(o.outstanding) || 0,
+                    ...o
+                }));
+                data.ingredients = Array.isArray(data.ingredients) ? data.ingredients.map(i => ({
+                    stock: Number(i.stock) || 0,
+                    unit: i.unit || 'g',
+                    minStock: Number(i.minStock) || 0,
+                    costPerUnit: Number(i.costPerUnit) || 0,
+                    ...i
+                })) : [];
+                data.promos = Array.isArray(data.promos) ? data.promos.map(p => ({
+                    active: p.active !== false,
+                    bundleItems: Array.isArray(p.bundleItems) ? p.bundleItems : [],
+                    ...p
+                })) : [];
+                data.inventoryMovements = Array.isArray(data.inventoryMovements) ? data.inventoryMovements : [];
+                return data;
+            }
+            save(showToast = true) {
+                localStorage.setItem('panaderia_pro_2025', JSON.stringify(this.data));
+                if (showToast) toast('Guardado');
+            }
+            reset() { localStorage.removeItem('panaderia_pro_2025'); location.reload(); }
+        }
+
+        // ====== APP PRINCIPAL ======
+        class App {
+            constructor() {
+                this.store = new Store();
+                this.ui = new UI(this);
+                this.init();
+                window.addEventListener('beforeunload', () => this.store.save(false));
+            }
+
+            init() {
+                this.ui.renderViews();
+                this.ui.renderAll();
+                this.ui.updateDashboard();
+
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.addEventListener('click', () => this.navigate(item.dataset.view));
+                });
+
+                document.getElementById('menuToggle').addEventListener('click', () => {
+                    document.getElementById('sidebar').classList.toggle('active');
+                });
+
+                document.addEventListener('keydown', e => {
+                    if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(m => this.closeModal(m.id));
+                });
+            }
+
+            navigate(viewId) {
+                document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+                document.getElementById(`view-${viewId}`).classList.remove('hidden');
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelector(`.nav-item[data-view="${viewId}"]`).classList.add('active');
+                if (viewId === 'dashboard') this.ui.updateDashboard();
+                document.getElementById('sidebar').classList.remove('active');
+            }
+
+            // ====== CLIENTES ======
+            getCustomer(id) { return this.store.data.customers.find(c => c.id === id) || null; }
+
+            saveCustomer() {
+                const f = document.getElementById('form-customer');
+                const data = {
+                    id: f.id.value || Utils.uuid(),
+                    name: f.name.value.trim(),
+                    phone: f.phone.value.trim(),
+                    address: f.address.value.trim(),
+                    creditLimit: f.creditLimit.value ? Number(f.creditLimit.value) : null,
+                    notes: f.notes.value.trim()
+                };
+                if (!data.name || !data.phone) return toast('Nombre y teléfono obligatorios', 'error');
+
+                const existing = this.getCustomer(data.id);
+                const merged = {
+                    balance: existing?.balance || 0,
+                    paymentHistory: existing?.paymentHistory || [],
+                    ...existing,
+                    ...data
+                };
+
+                if (existing) Object.assign(existing, merged); else this.store.data.customers.push(merged);
+
+                this.store.save();
+                this.ui.renderCustomers();
+                this.closeModal('modal-customer');
+            }
+
+            deleteCustomer(id) {
+                if (!confirm('¿Eliminar cliente?')) return;
+                this.store.data.customers = this.store.data.customers.filter(c => c.id !== id);
+                this.store.save();
+                this.ui.renderCustomers();
+                this.ui.updateDashboard();
+            }
+
+            recordCustomerPayment(id, { amount, method = 'cash', note = '' }) {
+                const customer = this.getCustomer(id);
+                if (!customer) return;
+                const value = Number(amount);
+                if (!value || value <= 0) return toast('Importe inválido', 'error');
+                customer.balance = Utils.round((customer.balance || 0) - value);
+                customer.paymentHistory = customer.paymentHistory || [];
+                customer.paymentHistory.push({ id: Utils.uuid(), date: new Date().toISOString(), method, amount: value, note });
+                this.store.save();
+                this.ui.renderCustomers();
+                this.ui.updateDashboard();
+            }
+
+            // ====== INGREDIENTES ======
+            getIngredient(id) { return this.store.data.ingredients.find(i => i.id === id) || null; }
+
+            saveIngredient() {
+                const f = document.getElementById('form-ingredient');
+                const data = {
+                    id: f.id.value || Utils.uuid(),
+                    name: f.name.value.trim(),
+                    unit: f.unit.value.trim() || 'g',
+                    costPerUnit: Number(f.costPerUnit.value) || 0,
+                    stock: Number(f.stock.value) || 0,
+                    minStock: Number(f.minStock.value) || 0
+                };
+                if (!data.name || data.costPerUnit <= 0) return toast('Datos de ingrediente incompletos', 'error');
+                const existing = this.getIngredient(data.id);
+                if (existing) Object.assign(existing, data); else this.store.data.ingredients.push(data);
+                this.store.save();
+                this.ui.renderInventory();
+                this.closeModal('modal-ingredient');
+            }
+
+            deleteIngredient(id) {
+                if (!confirm('¿Eliminar ingrediente?')) return;
+                this.store.data.ingredients = this.store.data.ingredients.filter(i => i.id !== id);
+                this.store.save();
+                this.ui.renderInventory();
+            }
+
+            recordInventoryMovement({ ingredientId, amount, reason }) {
+                this.store.data.inventoryMovements.unshift({
+                    id: Utils.uuid(),
+                    ingredientId,
+                    amount: Number(amount) || 0,
+                    reason,
+                    date: new Date().toISOString()
+                });
+                this.store.data.inventoryMovements = this.store.data.inventoryMovements.slice(0, 50);
+            }
+
+            adjustIngredientStock(id, delta, reason = '') {
+                const ingredient = this.getIngredient(id);
+                if (!ingredient) return;
+                ingredient.stock = Utils.round((ingredient.stock || 0) + delta, 3);
+                this.recordInventoryMovement({ ingredientId: id, amount: delta, reason });
+            }
+
+            consumeIngredients(order) {
+                this.expandOrderItems(order).forEach(({ productId, qty }) => {
+                    const product = this.store.data.products.find(p => p.id === productId);
+                    if (!product) return;
+                    (product.recipe || []).forEach(r => {
+                        if (!r.ingredientId) return;
+                        const amount = (Number(r.quantity) || 0) * qty;
+                        if (amount <= 0) return;
+                        this.adjustIngredientStock(r.ingredientId, -amount, `Consumo pedido #${order.id.slice(0,8)}`);
+                    });
+                });
+            }
+
+            revertOrderIngredients(order) {
+                this.expandOrderItems(order).forEach(({ productId, qty }) => {
+                    const product = this.store.data.products.find(p => p.id === productId);
+                    if (!product) return;
+                    (product.recipe || []).forEach(r => {
+                        if (!r.ingredientId) return;
+                        const amount = (Number(r.quantity) || 0) * qty;
+                        if (amount <= 0) return;
+                        this.adjustIngredientStock(r.ingredientId, amount, `Reverso pedido #${order.id.slice(0,8)}`);
+                    });
+                });
+            }
+
+            // ====== PROMOS & PACKS ======
+            getPromo(id) { return this.store.data.promos.find(p => p.id === id) || null; }
+
+            savePromo() {
+                const f = document.getElementById('form-promo');
+                const data = {
+                    id: f.id.value || Utils.uuid(),
+                    name: f.name.value.trim(),
+                    description: f.description.value.trim(),
+                    type: f.type.value,
+                    value: Number(f.value.value) || 0,
+                    bundlePrice: Number(f.bundlePrice.value) || 0,
+                    active: f.active.checked,
+                    bundleItems: []
+                };
+                if (!data.name) return toast('Nombre de promo requerido', 'error');
+                f.querySelectorAll('.bundle-row').forEach(row => {
+                    const productId = row.querySelector('.bundle-product').value;
+                    const qty = Number(row.querySelector('.bundle-qty').value) || 0;
+                    if (productId && qty > 0) data.bundleItems.push({ productId, qty });
+                });
+                const existing = this.getPromo(data.id);
+                if (existing) Object.assign(existing, data); else this.store.data.promos.push(data);
+                this.store.save();
+                this.ui.renderPromos();
+                this.closeModal('modal-promo');
+            }
+
+            deletePromo(id) {
+                if (!confirm('¿Eliminar promo/pack?')) return;
+                this.store.data.promos = this.store.data.promos.filter(p => p.id !== id);
+                this.store.save();
+                this.ui.renderPromos();
+            }
+
+            // ====== PRODUCTOS ======
+            getProduct(id) { return this.store.data.products.find(p => p.id === id) || null; }
+
+            saveProduct() {
+                const f = document.getElementById('form-product');
+                const price = parseFloat(f.price.value);
+                const prepTime = parseInt(f.prepTime.value) || 0;
+                const data = {
+                    id: f.id.value || Utils.uuid(),
+                    name: f.name.value.trim(),
+                    category: f.category.value,
+                    price: isNaN(price) ? 0 : price,
+                    prepTime,
+                    costs: [],
+                    recipe: []
+                };
+                if (!data.name || data.price <= 0) return toast('Completa nombre y precio', 'error');
+
+                document.querySelectorAll('.cost-row').forEach(row => {
+                    const name = row.querySelector('.cost-name').value.trim();
+                    const value = parseFloat(row.querySelector('.cost-value').value) || 0;
+                    if (name && value > 0) data.costs.push({ name, value });
+                });
+
+                document.querySelectorAll('.recipe-row').forEach(row => {
+                    const ingredientId = row.querySelector('.recipe-ingredient').value;
+                    const quantity = Number(row.querySelector('.recipe-qty').value) || 0;
+                    if (ingredientId && quantity > 0) data.recipe.push({ ingredientId, quantity });
+                });
+
+                const existing = this.getProduct(data.id);
+                if (existing) Object.assign(existing, data); else this.store.data.products.push(data);
+
+                this.store.save();
+                this.ui.renderProducts();
+                this.closeModal('modal-product');
+            }
+
+            deleteProduct(id) {
+                if (!confirm('¿Eliminar producto?')) return;
+                this.store.data.products = this.store.data.products.filter(p => p.id !== id);
+                this.store.save();
+                this.ui.renderProducts();
+            }
+
+            // ====== PEDIDOS ======
+            getOrder(id) { return this.store.data.orders.find(o => o.id === id) || null; }
+
+            saveOrder() {
+                const f = document.getElementById('form-order');
+                const order = {
+                    id: f.id.value || Utils.uuid(),
+                    customerId: f.customerId.value,
+                    date: f.date.value,
+                    status: f.status.value,
+                    paymentStatus: f.paymentStatus.value,
+                    paymentMethod: f.paymentMethod?.value || 'cash',
+                    amountPaid: Number(f.amountPaid.value) || 0,
+                    promoId: f.promoId ? f.promoId.value || null : null,
+                    items: [],
+                    createdAt: f.createdAt?.value || new Date().toISOString()
+                };
+
+                if (!order.customerId) return toast('Selecciona un cliente', 'error');
+                document.querySelectorAll('.order-line').forEach(row => {
+                    const productId = row.querySelector('.line-product').value;
+                    const qty = parseInt(row.querySelector('.line-qty').value) || 0;
+                    if (productId && qty > 0) order.items.push({ productId, qty });
+                });
+                if (order.items.length === 0) return toast('Añade al menos un producto', 'error');
+
+                const summary = this.calculateOrderSummary(order);
+                order.summary = summary;
+                order.outstanding = Utils.round(summary.total - order.amountPaid);
+                if (order.amountPaid >= summary.total) {
+                    order.paymentStatus = 'paid';
+                    order.outstanding = 0;
+                } else if (order.amountPaid > 0) {
+                    order.paymentStatus = 'partial';
+                } else {
+                    order.paymentStatus = 'unpaid';
+                }
+
+                const idx = this.store.data.orders.findIndex(o => o.id === order.id);
+                const existing = idx > -1 ? this.store.data.orders[idx] : null;
+
+                if (existing) {
+                    this.revertOrderIngredients(existing);
+                    this.adjustCustomerBalance(existing.customerId, -1 * (existing.outstanding || 0));
+                    this.store.data.orders[idx] = order;
+                } else {
+                    this.store.data.orders.push(order);
+                }
+
+                this.consumeIngredients(order);
+                this.adjustCustomerBalance(order.customerId, order.outstanding);
+
+                this.store.save();
+                this.ui.renderOrders();
+                this.ui.updateDashboard();
+                this.closeModal('modal-order');
+            }
+
+            adjustCustomerBalance(customerId, delta) {
+                if (!customerId || !delta) return;
+                const customer = this.getCustomer(customerId);
+                if (!customer) return;
+                customer.balance = Utils.round((customer.balance || 0) + delta);
+            }
+
+            duplicateOrder(id) {
+                const order = this.getOrder(id);
+                if (!order) return;
+                const copy = clone(order);
+                delete copy.id;
+                this.openModal('modal-order', null, 'order');
+                setTimeout(() => {
+                    const form = document.querySelector('#form-order');
+                    if (!form) return;
+                    form.customerId.value = copy.customerId;
+                    form.date.value = copy.date.slice(0,16);
+                    form.status.value = copy.status;
+                    form.paymentStatus.value = copy.paymentStatus;
+                    form.amountPaid.value = 0;
+                    const container = document.querySelector('#order-lines-container');
+                    container.innerHTML = '';
+                    copy.items.forEach(i => this.addOrderLine(i.productId, i.qty));
+                    this.ui.calculateOrderTotal();
+                }, 150);
+            }
+
+            printOrder(id) {
+                const order = this.getOrder(id);
+                if (!order) return;
+                const customer = this.getCustomer(order.customerId) || { name: 'Mostrador', phone: '' };
+                const expanded = this.expandOrderItems(order);
+                let total = 0;
+                const rows = expanded.map(item => {
+                    const product = this.getProduct(item.productId);
+                    if (!product) return '';
+                    total += product.price * item.qty;
+                    return `<tr><td>${escapeHTML(product.name)}</td><td>${item.qty}</td><td>${Utils.formatCurrency(product.price * item.qty)}</td></tr>`;
+                }).join('');
+
+                document.getElementById('print-area').innerHTML = `
+                    <div style="text-align:center;font-size:28px;margin:20px 0;font-weight:bold;">PANADERÍA PRO</div>
+                    <h2 style="text-align:center;margin-bottom:20px;">TICKET / ALBARÁN</h2>
+                    <p><strong>Cliente:</strong> ${escapeHTML(customer.name)}</p>
+                    <p><strong>Teléfono:</strong> ${escapeHTML(customer.phone)}</p>
+                    <p><strong>Fecha:</strong> ${Utils.formatDate(order.date)}</p>
+                    <table style="width:100%;border-collapse:collapse;margin:20px 0;">
+                        <thead><tr style="border-bottom:2px solid #000;"><th style="text-align:left;">Producto</th><th>Cant.</th><th>Precio</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                    <p style="text-align:right;font-size:24px;margin-top:30px;"><strong>Total: ${Utils.formatCurrency(order.summary?.total || total)}</strong></p>
+                `;
+                window.print();
+            }
+
+            deleteOrder(id) {
+                const order = this.getOrder(id);
+                if (!order || !confirm('¿Eliminar pedido?')) return;
+                this.revertOrderIngredients(order);
+                this.adjustCustomerBalance(order.customerId, -1 * (order.outstanding || 0));
+                this.store.data.orders = this.store.data.orders.filter(o => o.id !== id);
+                this.store.save();
+                this.ui.renderOrders();
+                this.ui.updateDashboard();
+            }
+
+            // ====== MODALES & CAMPOS DINÁMICOS ======
+            openModal(modalId, dataId = null, type = '') {
+                const overlay = document.getElementById(modalId);
+                overlay.innerHTML = this.getModalHTML(modalId, type);
+                overlay.classList.add('active');
+                overlay.onclick = e => { if (e.target === overlay) this.closeModal(modalId); };
+
+                const form = overlay.querySelector('form');
+                if (dataId && type && form) {
+                    const item = this.store.data[`${type}s`].find(i => i.id === dataId);
+                    if (!item) return;
+                    Object.keys(form.elements).forEach(() => {});
+                    form.id.value = item.id;
+
+                    if (type === 'customer') {
+                        form.name.value = item.name;
+                        form.phone.value = item.phone;
+                        form.address.value = item.address || '';
+                        form.creditLimit.value = item.creditLimit ?? '';
+                        form.notes.value = item.notes || '';
+                    }
+
+                    if (type === 'product') {
+                        form.name.value = item.name;
+                        form.price.value = item.price;
+                        form.prepTime.value = item.prepTime;
+                        form.category.value = item.category || 'general';
+                        const costContainer = overlay.querySelector('#costs-container');
+                        costContainer.innerHTML = '';
+                        item.costs.forEach(c => this.addCostRow(c.name, c.value));
+                        if (!item.costs.length) this.addCostRow();
+                        const recipeContainer = overlay.querySelector('#recipe-container');
+                        recipeContainer.innerHTML = '';
+                        item.recipe.forEach(r => this.addRecipeRow(r.ingredientId, r.quantity));
+                        if (!item.recipe.length) this.addRecipeRow();
+                        this.ui.calculateRecipeCost();
+                    }
+
+                    if (type === 'ingredient') {
+                        form.name.value = item.name;
+                        form.unit.value = item.unit;
+                        form.costPerUnit.value = item.costPerUnit;
+                        form.stock.value = item.stock;
+                        form.minStock.value = item.minStock;
+                    }
+
+                    if (type === 'promo') {
+                        form.name.value = item.name;
+                        form.description.value = item.description || '';
+                        form.type.value = item.type;
+                        form.value.value = item.value || 0;
+                        form.bundlePrice.value = item.bundlePrice || 0;
+                        form.active.checked = item.active !== false;
+                        const container = overlay.querySelector('#bundle-items-container');
+                        container.innerHTML = '';
+                        item.bundleItems.forEach(b => this.addPackProductRow(b.productId, b.qty));
+                        if (!item.bundleItems.length) this.addPackProductRow();
+                    }
+
+                    if (type === 'order') {
+                        form.customerId.value = item.customerId;
+                        form.date.value = item.date.slice(0,16);
+                        form.status.value = item.status;
+                        form.paymentStatus.value = item.paymentStatus;
+                        form.paymentMethod.value = item.paymentMethod || 'cash';
+                        form.amountPaid.value = item.amountPaid || 0;
+                        form.promoId.value = item.promoId || '';
+                        const container = overlay.querySelector('#order-lines-container');
+                        container.innerHTML = '';
+                        item.items.forEach(i => this.addOrderLine(i.productId, i.qty));
+                        this.ui.calculateOrderTotal();
+                    }
+                } else {
+                    if (type === 'product') {
+                        this.addCostRow();
+                        this.addRecipeRow();
+                    }
+                    if (type === 'ingredient') {
+                        overlay.querySelector('[name="unit"]').value = 'g';
+                    }
+                    if (type === 'promo') {
+                        this.addPackProductRow();
+                    }
+                    if (type === 'order') {
+                        const now = new Date();
+                        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                        overlay.querySelector('[name="date"]').value = now.toISOString().slice(0,16);
+                        this.addOrderLine();
+                        this.ui.calculateOrderTotal();
+                    }
+                }
+
+                setTimeout(() => overlay.querySelector('input, select, button')?.focus(), 100);
+            }
+
+            closeModal(modalId) {
+                const overlay = document.getElementById(modalId);
+                overlay.classList.remove('active');
+                setTimeout(() => overlay.innerHTML = '', 200);
+            }
+
+            getModalHTML(modalId, type) {
+                if (modalId === 'modal-customer') {
+                    return `<div class="modal" role="dialog">
+                        <div class="modal-header"><h3>Cliente</h3><button class="btn btn-sm btn-secondary" onclick="app.closeModal('modal-customer')">x</button></div>
+                        <div class="modal-body"><form id="form-customer"><input type="hidden" name="id">
+                            <div class="form-group"><label>Nombre *</label><input name="name" class="form-control" required></div>
+                            <div class="form-group"><label>Teléfono *</label><input name="phone" class="form-control" required></div>
+                            <div class="form-group"><label>Dirección</label><textarea name="address" class="form-control" rows="2"></textarea></div>
+                            <div style="display:flex;gap:1rem;">
+                                <div class="form-group" style="flex:1"><label>Límite crédito (€)</label><input name="creditLimit" type="number" class="form-control"></div>
+                                <div class="form-group" style="flex:1"><label>Notas</label><input name="notes" class="form-control"></div>
+                            </div>
+                        </form></div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" onclick="app.closeModal('modal-customer')">Cancelar</button>
+                            <button class="btn btn-primary" onclick="app.saveCustomer()">Guardar</button>
+                        </div>
+                    </div>`;
+                }
+
+                if (modalId === 'modal-ingredient') {
+                    return `<div class="modal" role="dialog">
+                        <div class="modal-header"><h3>Ingrediente</h3><button class="btn btn-sm btn-secondary" onclick="app.closeModal('modal-ingredient')">x</button></div>
+                        <div class="modal-body"><form id="form-ingredient"><input type="hidden" name="id">
+                            <div class="form-group"><label>Nombre *</label><input name="name" class="form-control" required></div>
+                            <div style="display:flex;gap:1rem;">
+                                <div class="form-group" style="flex:1"><label>Unidad (g, ml, u...)</label><input name="unit" class="form-control" value="g"></div>
+                                <div class="form-group" style="flex:1"><label>Coste / unidad (€) *</label><input name="costPerUnit" type="number" step="0.0001" class="form-control" required></div>
+                            </div>
+                            <div style="display:flex;gap:1rem;">
+                                <div class="form-group" style="flex:1"><label>Stock actual</label><input name="stock" type="number" step="0.01" class="form-control"></div>
+                                <div class="form-group" style="flex:1"><label>Mínimo deseado</label><input name="minStock" type="number" step="0.01" class="form-control"></div>
+                            </div>
+                        </form></div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" onclick="app.closeModal('modal-ingredient')">Cancelar</button>
+                            <button class="btn btn-primary" onclick="app.saveIngredient()">Guardar</button>
+                        </div>
+                    </div>`;
+                }
+
+                if (modalId === 'modal-product') {
+                    const ingredientOptions = this.store.data.ingredients.map(i => `<option value="${i.id}">${escapeHTML(i.name)} (${i.unit})</option>`).join('');
+                    return `<div class="modal" role="dialog">
+                        <div class="modal-header"><h3>Producto</h3><button class="btn btn-sm btn-secondary" onclick="app.closeModal('modal-product')">x</button></div>
+                        <div class="modal-body"><form id="form-product"><input type="hidden" name="id">
+                            <div class="form-group"><label>Nombre *</label><input name="name" class="form-control" required></div>
+                            <div style="display:flex;gap:1rem;">
+                                <div class="form-group" style="flex:1"><label>Categoría</label>
+                                    <select name="category" class="form-control">
+                                        <option value="pan">Pan</option>
+                                        <option value="dulce">Dulce</option>
+                                        <option value="salado">Salado</option>
+                                        <option value="bebida">Bebida</option>
+                                        <option value="general" selected>General</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex:1"><label>Precio (€) *</label><input type="number" step="0.01" name="price" class="form-control" required></div>
+                                <div class="form-group" style="flex:1"><label>Tiempo prep. (min)</label><input type="number" name="prepTime" class="form-control"></div>
+                            </div>
+                            <div class="form-group">
+                                <label style="display:flex;justify-content:space-between;align-items:center;">
+                                    <span>Costes adicionales</span>
+                                    <button type="button" class="btn btn-sm btn-secondary" onclick="app.addCostRow()">+ Añadir</button>
+                                </label>
+                                <div id="costs-container"></div>
+                                <div id="total-cost-display" style="text-align:right;font-weight:600;margin-top:0.5rem;">Coste Total: €0,00</div>
+                            </div>
+                            <div class="form-group">
+                                <label style="display:flex;justify-content:space-between;align-items:center;">
+                                    <span>Receta (ingredientes)</span>
+                                    <button type="button" class="btn btn-sm btn-secondary" onclick="app.addRecipeRow()">+ Añadir ingrediente</button>
+                                </label>
+                                <div id="recipe-container"></div>
+                                <div id="recipe-cost-display" style="text-align:right;font-weight:600;margin-top:0.5rem;">Coste ingredientes: €0,00</div>
+                            </div>
+                        </form></div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" onclick="app.closeModal('modal-product')">Cancelar</button>
+                            <button class="btn btn-primary" onclick="app.saveProduct()">Guardar</button>
+                        </div>
+                    </div>`;
+                }
+
+                if (modalId === 'modal-promo') {
+                    const products = this.store.data.products.map(p => `<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('');
+                    return `<div class="modal" role="dialog">
+                        <div class="modal-header"><h3>Promo / Pack</h3><button class="btn btn-sm btn-secondary" onclick="app.closeModal('modal-promo')">x</button></div>
+                        <div class="modal-body"><form id="form-promo"><input type="hidden" name="id">
+                            <div class="form-group"><label>Nombre *</label><input name="name" class="form-control" required></div>
+                            <div class="form-group"><label>Descripción</label><textarea name="description" class="form-control" rows="2"></textarea></div>
+                            <div style="display:flex;gap:1rem;">
+                                <div class="form-group" style="flex:1"><label>Tipo</label>
+                                    <select name="type" class="form-control">
+                                        <option value="percent">Descuento %</option>
+                                        <option value="fixed">Descuento fijo</option>
+                                        <option value="bundle">Pack de productos</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex:1"><label>Valor (%) / (€)</label><input name="value" type="number" step="0.01" class="form-control"></div>
+                            </div>
+                            <div class="form-group"><label>Precio pack (si aplica)</label><input name="bundlePrice" type="number" step="0.01" class="form-control" placeholder="Ej. 5.00"></div>
+                            <div class="form-group">
+                                <label style="display:flex;justify-content:space-between;align-items:center;">
+                                    <span>Productos del pack</span>
+                                    <button type="button" class="btn btn-sm btn-secondary" onclick="app.addPackProductRow()">+ Añadir producto</button>
+                                </label>
+                                <div id="bundle-items-container"></div>
+                            </div>
+                            <label style="display:flex;align-items:center;gap:0.5rem;"><input type="checkbox" name="active" checked> Activa</label>
+                        </form></div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" onclick="app.closeModal('modal-promo')">Cancelar</button>
+                            <button class="btn btn-primary" onclick="app.savePromo()">Guardar</button>
+                        </div>
+                    </div>`;
+                }
+
+                if (modalId === 'modal-order') {
+                    const customers = this.store.data.customers.map(c => `<option value="${c.id}">${escapeHTML(c.name)}</option>`).join('') || '<option value="">No hay clientes</option>';
+                    const products = this.store.data.products.map(p => `<option value="${p.id}">${escapeHTML(p.name)} - ${Utils.formatCurrency(p.price)}</option>`).join('') || '<option value="">No hay productos</option>';
+                    const promos = this.store.data.promos.filter(p => p.active !== false).map(p => `<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('');
+                    return `<div class="modal" role="dialog">
+                        <div class="modal-header"><h3>Pedido</h3><button class="btn btn-sm btn-secondary" onclick="app.closeModal('modal-order')">x</button></div>
+                        <div class="modal-body"><form id="form-order"><input type="hidden" name="id"><input type="hidden" name="createdAt">
+                            <div style="display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;">
+                                <div style="flex:1;min-width:220px"><label>Cliente</label><select name="customerId" class="form-control" required>${customers}</select></div>
+                                <div style="flex:1;min-width:220px"><label>Fecha entrega</label><input type="datetime-local" name="date" class="form-control" required></div>
+                                <div style="flex:1;min-width:180px"><label>Promo / Pack</label>
+                                    <select name="promoId" class="form-control">
+                                        <option value="">Sin promo</option>
+                                        ${promos}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                                    <label>Productos</label>
+                                    <button type="button" class="btn btn-sm btn-secondary" onclick="app.addOrderLine()">+ Añadir línea</button>
+                                </div>
+                                <div id="order-lines-container"></div>
+                                <div style="text-align:right;margin-top:0.75rem;font-weight:600;">
+                                    <div id="order-subtotal-display">Subtotal: €0,00</div>
+                                    <div id="order-discount-display">Descuento: €0,00</div>
+                                    <div id="order-total-display" style="font-size:1.3rem;">Total: €0,00</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+                                <div style="flex:1;min-width:160px"><label>Estado</label><select name="status" class="form-control">
+                                    <option value="pending">Pendiente</option>
+                                    <option value="preparing">Preparando</option>
+                                    <option value="ready">Listo</option>
+                                    <option value="delivered">Entregado</option>
+                                </select></div>
+                                <div style="flex:1;min-width:160px"><label>Estado pago</label><select name="paymentStatus" class="form-control">
+                                    <option value="unpaid">No pagado</option>
+                                    <option value="partial">Parcial</option>
+                                    <option value="paid">Pagado</option>
+                                </select></div>
+                                <div style="flex:1;min-width:160px"><label>Metodo pago</label><select name="paymentMethod" class="form-control">
+                                    <option value="cash">Efectivo</option>
+                                    <option value="card">Tarjeta</option>
+                                    <option value="transfer">Transferencia</option>
+                                    <option value="bizum">Bizum</option>
+                                </select></div>
+                                <div style="flex:1;min-width:160px"><label>Pagado (€)</label><input type="number" step="0.01" name="amountPaid" class="form-control" value="0"></div>
+                            </div>
+                        </form></div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" onclick="app.closeModal('modal-order')">Cancelar</button>
+                            <button class="btn btn-primary" onclick="app.saveOrder()">Guardar Pedido</button>
+                        </div>
+                    </div>`;
+                }
+                return '';
+            }
+
+            addCostRow(name = '', value = 0) {
+                const container = document.getElementById('costs-container');
+                if (!container) return;
+                const row = document.createElement('div');
+                row.className = 'flex gap-2 mb-2 cost-row';
+                row.innerHTML = `
+                    <input type="text" class="form-control cost-name" placeholder="Concepto" value="${escapeHTML(name)}" style="flex:2">
+                    <input type="number" step="0.01" class="form-control cost-value" placeholder="0.00" value="${value}" style="flex:1">
+                    <button type="button" class="btn btn-sm btn-danger" onclick="this.parentNode.remove();app.ui.calculateProductCost();app.ui.calculateRecipeCost()">Eliminar</button>
+                `;
+                container.appendChild(row);
+                row.querySelector('.cost-value').addEventListener('input', () => { this.ui.calculateProductCost(); this.ui.calculateRecipeCost(); });
+                this.ui.calculateProductCost();
+            }
+
+            addRecipeRow(ingredientId = '', quantity = '') {
+                const container = document.getElementById('recipe-container');
+                if (!container) return;
+                const options = this.store.data.ingredients.map(i => `<option value="${i.id}" ${i.id===ingredientId?'selected':''}>${escapeHTML(i.name)} (${i.unit})</option>`).join('');
+                const row = document.createElement('div');
+                row.className = 'flex gap-2 mb-2 recipe-row';
+                row.innerHTML = `
+                    <select class="form-control recipe-ingredient" style="flex:3">
+                        <option value="">Selecciona ingrediente</option>
+                        ${options}
+                    </select>
+                    <input type="number" min="0" step="0.01" class="form-control recipe-qty" style="flex:1" placeholder="Cantidad" value="${quantity}">
+                    <button type="button" class="btn btn-sm btn-danger" onclick="this.parentNode.remove();app.ui.calculateRecipeCost()">Eliminar</button>
+                `;
+                container.appendChild(row);
+                row.querySelectorAll('select,input').forEach(el => el.addEventListener('input', () => this.ui.calculateRecipeCost()));
+                this.ui.calculateRecipeCost();
+            }
+
+            addPackProductRow(productId = '', qty = 1) {
+                const container = document.getElementById('bundle-items-container');
+                if (!container) return;
+                const options = this.store.data.products.map(p => `<option value="${p.id}" ${p.id===productId?'selected':''}>${escapeHTML(p.name)}</option>`).join('');
+                const row = document.createElement('div');
+                row.className = 'flex gap-2 mb-2 bundle-row';
+                row.innerHTML = `
+                    <select class="form-control bundle-product" style="flex:3">
+                        <option value="">Producto</option>
+                        ${options}
+                    </select>
+                    <input type="number" min="1" class="form-control bundle-qty" style="flex:1" value="${qty}">
+                    <button type="button" class="btn btn-sm btn-danger" onclick="this.parentNode.remove()">Eliminar</button>
+                `;
+                container.appendChild(row);
+            }
+
+            addOrderLine(productId = '', qty = 1) {
+                const container = document.getElementById('order-lines-container');
+                if (!container) return;
+                const div = document.createElement('div');
+                div.className = 'flex gap-2 mb-2 order-line';
+                const opts = this.store.data.products.length ? this.store.data.products.map(p => `<option value="${p.id}" ${p.id===productId?'selected':''}>${escapeHTML(p.name)} - ${Utils.formatCurrency(p.price)}</option>`).join('') : '<option value="">No hay productos</option>';
+                div.innerHTML = `
+                    <select class="form-control line-product" style="flex:3">${opts}</select>
+                    <input type="number" min="1" class="form-control line-qty" value="${qty}" style="flex:1">
+                    <button type="button" class="btn btn-sm btn-danger" onclick="this.parentNode.remove();app.ui.calculateOrderTotal()">Eliminar</button>
+                `;
+                container.appendChild(div);
+                div.querySelector('.line-product').addEventListener('change', () => this.ui.calculateOrderTotal());
+                div.querySelector('.line-qty').addEventListener('input', () => this.ui.calculateOrderTotal());
+                this.ui.calculateOrderTotal();
+            }
+
+            // ====== CÁLCULOS ======
+            expandOrderItems(orderLike) {
+                const items = [];
+                (orderLike.items || []).forEach(i => {
+                    if (!i.productId) return;
+                    items.push({ productId: i.productId, qty: Number(i.qty) || 0 });
+                });
+                return items;
+            }
+
+            calculateProductFinancials(product) {
+                const ingredientCost = (product.recipe || []).reduce((sum, r) => {
+                    const ing = this.getIngredient(r.ingredientId);
+                    return sum + (ing ? ing.costPerUnit * (Number(r.quantity) || 0) : 0);
+                }, 0);
+                const miscCost = Utils.sum(product.costs || [], 'value');
+                const cost = ingredientCost + miscCost;
+                return { cost, margin: (product.price || 0) - cost };
+            }
+
+            calculateOrderSummary(orderLike) {
+                const expanded = this.expandOrderItems(orderLike);
+                let subtotal = 0;
+                let cost = 0;
+                expanded.forEach(item => {
+                    const product = this.getProduct(item.productId);
+                    if (!product) return;
+                    const fin = this.calculateProductFinancials(product);
+                    subtotal += product.price * item.qty;
+                    cost += fin.cost * item.qty;
+                });
+                const promo = orderLike.promoId ? this.getPromo(orderLike.promoId) : null;
+                const promoResult = this.applyPromo(promo, expanded, subtotal);
+                const total = Math.max(0, subtotal - promoResult.discountAmount);
+                return {
+                    subtotal: Utils.round(subtotal),
+                    discount: Utils.round(promoResult.discountAmount),
+                    total: Utils.round(total),
+                    cost: Utils.round(cost),
+                    margin: Utils.round(total - cost)
+                };
+            }
+
+            applyPromo(promo, expandedItems, subtotal) {
+                if (!promo || promo.active === false) return { discountAmount: 0 };
+                let discount = 0;
+                if (promo.type === 'percent') discount = subtotal * (promo.value / 100);
+                else if (promo.type === 'fixed') discount = promo.value;
+                else if (promo.type === 'bundle' && promo.bundleItems.length) {
+                    const counts = expandedItems.reduce((acc, item) => {
+                        acc[item.productId] = (acc[item.productId] || 0) + item.qty;
+                        return acc;
+                    }, {});
+                    const qualifies = promo.bundleItems.every(req => counts[req.productId] >= req.qty);
+                    if (qualifies) {
+                        const packValue = promo.bundleItems.reduce((sum, req) => {
+                            const product = this.getProduct(req.productId);
+                            return sum + (product ? product.price * req.qty : 0);
+                        }, 0);
+                        discount = Math.max(0, packValue - promo.bundlePrice);
+                    }
+                }
+                return { discountAmount: Math.min(discount, subtotal) };
+            }
+
+            exportData() {
+                const data = JSON.stringify({ version: 2, exportedAt: new Date().toISOString(), data: this.store.data }, null, 2);
+                const blob = new Blob([data], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `panaderia_backup_${new Date().toISOString().slice(0,10)}.json`;
+                a.click();
+            }
+
+            importData(file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    try {
+                        const obj = JSON.parse(e.target.result);
+                        const data = obj.data || obj;
+                        this.store.data = this.store.ensureSchema(data);
+                        this.store.save(false);
+                        toast('Datos importados');
+                        location.reload();
+                    } catch { toast('Archivo inválido', 'error'); }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // ====== UI ======
+        class UI {
+            constructor(app) {
+                this.app = app;
+                this.charts = {};
+                this.orderFilter = { type: 'all', search: '' };
+            }
+
+            renderViews() {
+                document.getElementById('view-dashboard').innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+                        <h1>Dashboard</h1>
+                        <button class="btn btn-secondary" onclick="app.ui.updateDashboard()"><i class="fas fa-rotate"></i> Actualizar</button>
+                    </div>
+                    <div class="grid-dashboard" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
+                        <div class="card stat"><div class="stat-icon" style="background:#dcfce7;color:#166534"><i class="fas fa-euro-sign"></i></div><div class="stat-label">Ingresos</div><div class="stat-value" id="stat-revenue">€0,00</div></div>
+                        <div class="card stat"><div class="stat-icon" style="background:#fee2e2;color:#991b1b"><i class="fas fa-wallet"></i></div><div class="stat-label">Costes</div><div class="stat-value" id="stat-costs">€0,00</div></div>
+                        <div class="card stat"><div class="stat-icon" style="background:#dbeafe;color:#1e40af"><i class="fas fa-chart-line"></i></div><div class="stat-label">Beneficio</div><div class="stat-value" id="stat-profit">€0,00</div></div>
+                        <div class="card stat"><div class="stat-icon" style="background:#fef3c7;color:#92400e"><i class="fas fa-clock"></i></div><div class="stat-label">Pedidos pendientes</div><div class="stat-value" id="stat-pending">0</div></div>
+                        <div class="card stat"><div class="stat-icon" style="background:#ffe4e6;color:#be123c"><i class="fas fa-triangle-exclamation"></i></div><div class="stat-label">Cuentas por cobrar</div><div class="stat-value" id="stat-receivables">€0,00</div></div>
+                        <div class="card stat"><div class="stat-icon" style="background:#ede9fe;color:#5b21b6"><i class="fas fa-users"></i></div><div class="stat-label">Clientes con deuda</div><div class="stat-value" id="stat-debtors">0</div></div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem;margin-top:1.5rem;">
+                        <div class="card"><h3>Ventas diarias</h3><div class="chart-container"><canvas id="chart-daily"></canvas></div></div>
+                        <div class="card"><h3>Productos más vendidos</h3><div class="chart-container"><canvas id="chart-products"></canvas></div></div>
+                        <div class="card"><h3>Pagos vs Deudas</h3><div class="chart-container"><canvas id="chart-payments"></canvas></div></div>
+                    </div>
+                    <div class="card" style="margin-top:1.5rem;">
+                        <h3>Top clientes con deuda</h3>
+                        <ul id="list-top-debtors" style="margin-top:1rem;list-style:none;display:flex;flex-direction:column;gap:0.5rem;"></ul>
+                    </div>
+                `;
+
+                document.getElementById('view-customers').innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+                        <h1>Clientes</h1>
+                        <button class="btn btn-primary" onclick="app.openModal('modal-customer')">+ Cliente</button>
+                    </div>
+                    <div class="card">
+                        <input type="text" placeholder="Buscar cliente..." class="form-control mb-4" id="search-customers">
+                        <table id="table-customers">
+                            <thead><tr><th>Cliente</th><th>Contacto</th><th>Saldo</th><th>Acciones</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>`;
+
+                document.getElementById('view-products').innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+                        <h1>Productos</h1>
+                        <button class="btn btn-primary" onclick="app.openModal('modal-product')">+ Producto</button>
+                    </div>
+                    <div class="card">
+                        <table id="table-products">
+                            <thead><tr><th>Producto</th><th>Categoría</th><th>Precio</th><th>Coste</th><th>Margen</th><th>Tiempo</th><th>Acciones</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>`;
+
+                document.getElementById('view-inventory').innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+                        <h1>Inventario</h1>
+                        <div style="display:flex;gap:0.5rem;">
+                            <button class="btn btn-primary" onclick="app.openModal('modal-ingredient')">+ Ingrediente</button>
+                            <button class="btn btn-secondary" onclick="app.ui.renderInventory()"><i class="fas fa-rotate"></i></button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <input type="text" placeholder="Buscar ingrediente..." class="form-control mb-4" id="search-ingredients">
+                        <table id="table-ingredients">
+                            <thead><tr><th>Ingrediente</th><th>Stock</th><th>Coste</th><th>Estado</th><th>Acciones</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="card">
+                        <h3>Movimientos recientes</h3>
+                        <ul id="inventory-movements" style="margin-top:1rem;list-style:none;display:flex;flex-direction:column;gap:0.5rem;"></ul>
+                    </div>`;
+
+                document.getElementById('view-promos').innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+                        <h1>Packs & Descuentos</h1>
+                        <button class="btn btn-primary" onclick="app.openModal('modal-promo')">+ Promo</button>
+                    </div>
+                    <div class="card">
+                        <table id="table-promos">
+                            <thead><tr><th>Nombre</th><th>Tipo</th><th>Valor</th><th>Estado</th><th>Acciones</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>`;
+
+                document.getElementById('view-orders').innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:1rem;">
+                        <h1>Pedidos</h1>
+                        <button class="btn btn-primary" onclick="app.openModal('modal-order')">+ Pedido</button>
+                    </div>
+                    <div class="card">
+                        <div style="display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;">
+                            <input type="text" placeholder="Buscar (cliente, estado, id)..." class="form-control" id="search-orders" style="flex:1;min-width:220px;">
+                            <div style="display:flex;gap:0.5rem;">
+                                <button class="btn btn-secondary" onclick="app.ui.filterOrders('pending')">Pendientes</button>
+                                <button class="btn btn-secondary" onclick="app.ui.filterOrders('today')">Hoy</button>
+                                <button class="btn btn-secondary" onclick="app.ui.filterOrders('all')">Todos</button>
+                            </div>
+                        </div>
+                        <table id="table-orders">
+                            <thead><tr><th>ID</th><th>Cliente / Fecha</th><th>Total</th><th>Pendiente</th><th>Estado</th><th>Pago</th><th>Acciones</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>`;
+
+                document.getElementById('view-customers').insertAdjacentHTML('beforeend', '<div class="card" style="margin-top:1.5rem;"><h3>Evolución de pagos</h3><div class="chart-container"><canvas id="chart-payment-methods"></canvas></div></div>');
+
+                document.getElementById('view-settings').innerHTML = `
+                    <h1 style="margin-bottom:1.5rem;">Configuración</h1>
+                    <div class="card mb-4">
+                        <h3>Backups</h3>
+                        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;">
+                            <button class="btn btn-primary" onclick="app.exportData()">Exportar datos</button>
+                            <label class="btn btn-secondary"><i class="fas fa-upload"></i> Importar <input type="file" hidden onchange="app.importData(this.files[0])"></label>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 style="color:var(--danger);">Zona de peligro</h3>
+                        <button class="btn btn-danger" onclick="if(confirm('¿Borrar todos los datos?')) app.store.reset()">Borrar todo</button>
+                    </div>`;
+            }
+
+            renderAll() {
+                this.renderCustomers();
+                this.renderProducts();
+                this.renderInventory();
+                this.renderPromos();
+                this.renderOrders();
+            }
+
+            renderCustomers(filter = '') {
+                const tbody = document.querySelector('#table-customers tbody');
+                if (!tbody) return;
+                const filtered = this.app.store.data.customers.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()) || c.phone.toLowerCase().includes(filter.toLowerCase()));
+                tbody.innerHTML = filtered.map(c => {
+                    const balance = Utils.round(c.balance || 0);
+                    const balanceBadge = balance > 0 ? '<span class="badge badge-warning">Debe ' + Utils.formatCurrency(balance) + '</span>' : '<span class="badge badge-success">Al día</span>';
+                    return `<tr>
+                        <td><strong>${escapeHTML(c.name)}</strong><br><small>${escapeHTML(c.notes || '')}</small></td>
+                        <td>${escapeHTML(c.phone)}<br><small>${escapeHTML(c.address || '-')}</small></td>
+                        <td>${balanceBadge}</td>
+                        <td style="display:flex;gap:0.25rem;flex-wrap:wrap;">
+                            <button class="btn btn-sm btn-secondary" onclick="app.openModal('modal-customer','${c.id}','customer')">Editar</button>
+                            <button class="btn btn-sm" style="background:#0ea5e9;color:white;" onclick="app.ui.showCustomerPaymentPrompt('${c.id}')">Registrar pago</button>
+                            <button class="btn btn-sm btn-danger" onclick="app.deleteCustomer('${c.id}')">Eliminar</button>
+                        </td>
+                    </tr>`;
+                }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">Agrega tu primer cliente</td></tr>';
+            }
+
+            renderProducts() {
+                const tbody = document.querySelector('#table-products tbody');
+                if (!tbody) return;
+                tbody.innerHTML = this.app.store.data.products.map(p => {
+                    const fin = this.app.calculateProductFinancials(p);
+                    const badge = fin.margin >= 0 ? 'badge-success' : 'badge-danger';
+                    return `<tr>
+                        <td><strong>${escapeHTML(p.name)}</strong></td>
+                        <td>${escapeHTML(p.category || '-')}</td>
+                        <td>${Utils.formatCurrency(p.price)}</td>
+                        <td>${Utils.formatCurrency(fin.cost)}</td>
+                        <td><span class="badge ${badge}">${Utils.formatCurrency(fin.margin)}</span></td>
+                        <td>${p.prepTime || 0} min</td>
+                        <td>
+                            <button class="btn btn-sm btn-secondary" onclick="app.openModal('modal-product','${p.id}','product')">Editar</button>
+                            <button class="btn btn-sm btn-danger" onclick="app.deleteProduct('${p.id}')">Eliminar</button>
+                        </td>
+                    </tr>`;
+                }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">Añade tus productos</td></tr>';
+            }
+
+            renderInventory(filter = '') {
+                const tbody = document.querySelector('#table-ingredients tbody');
+                if (!tbody) return;
+                const term = (typeof filter === 'string' ? filter : document.getElementById('search-ingredients')?.value || '').toLowerCase();
+                const ingredients = this.app.store.data.ingredients.filter(i => i.name.toLowerCase().includes(term));
+                tbody.innerHTML = ingredients.map(i => {
+                    const status = i.stock <= i.minStock ? '<span class="badge badge-danger">Reponer</span>' : '<span class="badge badge-success">OK</span>';
+                    return `<tr>
+                        <td><strong>${escapeHTML(i.name)}</strong></td>
+                        <td>${Utils.round(i.stock, 3)} ${i.unit}</td>
+                        <td>${Utils.formatCurrency(i.costPerUnit)} / ${i.unit}</td>
+                        <td>${status}</td>
+                        <td style="display:flex;gap:0.25rem;flex-wrap:wrap;">
+                            <button class="btn btn-sm btn-secondary" onclick="app.openModal('modal-ingredient','${i.id}','ingredient')">Editar</button>
+                            <button class="btn btn-sm" style="background:#0ea5e9;color:white;" onclick="app.adjustIngredientStock('${i.id}', Number(prompt('Cantidad a agregar (+) o descontar (-):', '0'))||0, 'Ajuste manual'); app.ui.renderInventory();">Ajustar</button>
+                            <button class="btn btn-sm btn-danger" onclick="app.deleteIngredient('${i.id}')">Eliminar</button>
+                        </td>
+                    </tr>`;
+                }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">Sin ingredientes</td></tr>';
+
+                const ul = document.getElementById('inventory-movements');
+                if (ul) {
+                    ul.innerHTML = this.app.store.data.inventoryMovements.slice(0,10).map(m => {
+                        const ing = this.app.getIngredient(m.ingredientId) || { name: '—' };
+                        const sign = m.amount >= 0 ? '+' : '-';
+                        return `<li style="display:flex;justify-content:space-between;gap:1rem;">
+                            <span>${escapeHTML(ing.name)} <small>${escapeHTML(m.reason || '')}</small></span>
+                            <span style="font-weight:600;color:${m.amount>=0?'#16a34a':'#dc2626'};">${sign}${Math.abs(m.amount).toFixed(2)} ${ing.unit || ''}</span>
+                        </li>`;
+                    }).join('') || '<li style="color:var(--text-muted);">Sin movimientos</li>';
+                }
+            }
+
+            renderPromos() {
+                const tbody = document.querySelector('#table-promos tbody');
+                if (!tbody) return;
+                tbody.innerHTML = this.app.store.data.promos.map(p => {
+                    const typeLabel = { percent:'% descuento', fixed:'€ descuento', bundle:'Pack' }[p.type] || p.type;
+                    const valueLabel = p.type === 'percent' ? `${p.value}%` : Utils.formatCurrency(p.type === 'bundle' ? p.bundlePrice : p.value);
+                    const status = p.active !== false ? '<span class="badge badge-success">Activa</span>' : '<span class="badge badge-danger">Inactiva</span>';
+                    return `<tr>
+                        <td><strong>${escapeHTML(p.name)}</strong><br><small>${escapeHTML(p.description || '')}</small></td>
+                        <td>${typeLabel}</td>
+                        <td>${valueLabel}</td>
+                        <td>${status}</td>
+                        <td>
+                            <button class="btn btn-sm btn-secondary" onclick="app.openModal('modal-promo','${p.id}','promo')">Editar</button>
+                            <button class="btn btn-sm btn-danger" onclick="app.deletePromo('${p.id}')">Eliminar</button>
+                        </td>
+                    </tr>`;
+                }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">Sin promos</td></tr>';
+            }
+
+            renderOrders() {
+                const tbody = document.querySelector('#table-orders tbody');
+                if (!tbody) return;
+                const term = (document.getElementById('search-orders')?.value || '').toLowerCase();
+                let orders = [...this.app.store.data.orders];
+                if (this.orderFilter.type === 'pending') orders = orders.filter(o => ['pending','preparing'].includes(o.status));
+                if (this.orderFilter.type === 'today') orders = orders.filter(o => o.date.slice(0,10) === new Date().toISOString().slice(0,10));
+                if (term) {
+                    orders = orders.filter(o => {
+                        const cust = this.app.getCustomer(o.customerId);
+                        return o.id.toLowerCase().includes(term) || (cust && cust.name.toLowerCase().includes(term)) || o.status.toLowerCase().includes(term) || o.paymentStatus.toLowerCase().includes(term);
+                    });
+                }
+                orders.sort((a,b) => new Date(b.date) - new Date(a.date));
+                tbody.innerHTML = orders.map(o => {
+                    const cust = this.app.getCustomer(o.customerId) || { name: 'Mostrador' };
+                    const summary = o.summary || this.app.calculateOrderSummary(o);
+                    const statusCls = {pending:'warning',preparing:'info',ready:'primary',delivered:'success'}[o.status] || 'secondary';
+                    const payCls = {unpaid:'danger',partial:'warning',paid:'success'}[o.paymentStatus] || 'secondary';
+                    const outstanding = Utils.round(o.outstanding ?? (summary.total - (o.amountPaid || 0)));
+                    return `<tr>
+                        <td>#${o.id.slice(0,8)}</td>
+                        <td><strong>${escapeHTML(cust.name)}</strong><br><small>${Utils.formatDate(o.date)}</small></td>
+                        <td>${Utils.formatCurrency(summary.total)}</td>
+                        <td>${outstanding > 0 ? `<span class="badge badge-danger">${Utils.formatCurrency(outstanding)}</span>` : '<span class="badge badge-success">0 €</span>'}</td>
+                        <td><span class="badge badge-${statusCls}">${o.status}</span></td>
+                        <td><span class="badge badge-${payCls}">${o.paymentStatus}</span><br><small>${escapeHTML(o.paymentMethod || 'cash')}</small></td>
+                        <td style="display:flex;gap:0.25rem;flex-wrap:wrap;">
+                            <button class="btn btn-sm btn-secondary" onclick="app.openModal('modal-order','${o.id}','order')">Editar</button>
+                            <button class="btn btn-sm" style="background:#f59e0b;color:white;" onclick="app.duplicateOrder('${o.id}')">Duplicar</button>
+                            <button class="btn btn-sm btn-success" onclick="app.printOrder('${o.id}')">Imprimir</button>
+                            <button class="btn btn-sm btn-danger" onclick="app.deleteOrder('${o.id}')">Eliminar</button>
+                        </td>
+                    </tr>`;
+                }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">Sin pedidos</td></tr>';
+            }
+
+            filterOrders(type) {
+                this.orderFilter.type = type;
+                this.renderOrders();
+            }
+
+            showCustomerPaymentPrompt(id) {
+                const amount = prompt('Importe recibido (€):');
+                if (amount === null) return;
+                const method = prompt('Método (cash/card/transfer/bizum):', 'cash') || 'cash';
+                this.app.recordCustomerPayment(id, { amount, method });
+            }
+
+            calculateProductCost() {
+                let total = 0;
+                document.querySelectorAll('.cost-row').forEach(r => total += parseFloat(r.querySelector('.cost-value').value) || 0);
+                const el = document.getElementById('total-cost-display');
+                if (el) el.textContent = `Coste Total: ${Utils.formatCurrency(total)}`;
+            }
+
+            calculateRecipeCost() {
+                let total = 0;
+                document.querySelectorAll('.recipe-row').forEach(row => {
+                    const ingredient = this.app.getIngredient(row.querySelector('.recipe-ingredient').value);
+                    const qty = Number(row.querySelector('.recipe-qty').value) || 0;
+                    if (ingredient) total += ingredient.costPerUnit * qty;
+                });
+                const el = document.getElementById('recipe-cost-display');
+                if (el) el.textContent = `Coste ingredientes: ${Utils.formatCurrency(total)}`;
+            }
+
+            calculateOrderTotal() {
+                const form = document.getElementById('form-order');
+                if (!form) return;
+                const tempOrder = {
+                    promoId: form.promoId?.value,
+                    items: Array.from(document.querySelectorAll('.order-line')).map(row => ({
+                        productId: row.querySelector('.line-product').value,
+                        qty: Number(row.querySelector('.line-qty').value) || 0
+                    }))
+                };
+                const summary = this.app.calculateOrderSummary(tempOrder);
+                document.getElementById('order-subtotal-display').textContent = `Subtotal: ${Utils.formatCurrency(summary.subtotal)}`;
+                document.getElementById('order-discount-display').textContent = `Descuento: ${Utils.formatCurrency(summary.discount)}`;
+                document.getElementById('order-total-display').textContent = `Total: ${Utils.formatCurrency(summary.total)}`;
+            }
+
+            updateDashboard() {
+                const orders = this.app.store.data.orders;
+                let revenue = 0, costs = 0, pending = 0, receivables = 0;
+                const statusCounts = { paid:0, partial:0, unpaid:0 };
+                const methodCounts = {};
+                const daily = {};
+                const productHits = {};
+                orders.forEach(o => {
+                    const summary = o.summary || this.app.calculateOrderSummary(o);
+                    revenue += summary.total;
+                    costs += summary.cost;
+                    if (['pending','preparing'].includes(o.status)) pending++;
+                    receivables += Math.max(0, summary.total - (o.amountPaid || 0));
+                    statusCounts[o.paymentStatus] = (statusCounts[o.paymentStatus] || 0) + summary.total;
+                    const method = o.paymentMethod || 'cash';
+                    methodCounts[method] = (methodCounts[method] || 0) + (o.amountPaid || 0);
+                    const day = o.date.slice(0,10);
+                    daily[day] = (daily[day] || 0) + summary.total;
+                    this.app.expandOrderItems(o).forEach(item => {
+                        productHits[item.productId] = (productHits[item.productId] || 0) + item.qty;
+                    });
+                });
+                document.getElementById('stat-revenue').textContent = Utils.formatCurrency(revenue);
+                document.getElementById('stat-costs').textContent = Utils.formatCurrency(costs);
+                document.getElementById('stat-profit').textContent = Utils.formatCurrency(revenue - costs);
+                document.getElementById('stat-pending').textContent = pending;
+                document.getElementById('stat-receivables').textContent = Utils.formatCurrency(receivables);
+                const debtors = this.app.store.data.customers.filter(c => (c.balance || 0) > 0);
+                document.getElementById('stat-debtors').textContent = debtors.length;
+                this.renderTopDebtors(debtors);
+
+                const dailyData = Object.entries(daily).sort(([a],[b]) => a.localeCompare(b));
+                this.renderChart('chart-daily', {
+                    type: 'line',
+                    data: { labels: dailyData.map(d => d[0]), datasets: [{ label: 'Ventas', data: dailyData.map(d => d[1]), borderColor: '#d97706', fill: false }] },
+                    options: { responsive: true, plugins: { legend: { display: false } } }
+                });
+
+                const topProducts = Object.entries(productHits).sort((a,b) => b[1]-a[1]).slice(0,5).map(([id, qty]) => ({ name: this.app.getProduct(id)?.name || 'Producto', qty }));
+                this.renderChart('chart-products', {
+                    type: 'bar',
+                    data: { labels: topProducts.map(p => p.name), datasets: [{ data: topProducts.map(p => p.qty), backgroundColor: '#f59e0b' }] },
+                    options: { responsive: true, plugins: { legend: { display: false } } }
+                });
+
+                this.renderChart('chart-payments', {
+                    type: 'doughnut',
+                    data: { labels: ['Pagado','Parcial','Pendiente'], datasets: [{ data: [statusCounts.paid || 0, statusCounts.partial || 0, statusCounts.unpaid || 0], backgroundColor: ['#16a34a','#f59e0b','#ef4444'] }] },
+                    options: { responsive: true }
+                });
+
+                const paymentMethods = Object.entries(methodCounts);
+                this.renderChart('chart-payment-methods', {
+                    type: 'pie',
+                    data: { labels: paymentMethods.map(([m]) => m), datasets: [{ data: paymentMethods.map(([,v]) => v), backgroundColor: ['#1d4ed8','#f97316','#9333ea','#059669','#dc2626'] }] },
+                    options: { responsive: true }
+                });
+            }
+
+            renderChart(id, config) {
+                const ctx = document.getElementById(id);
+                if (!ctx) return;
+                if (this.charts[id]) this.charts[id].destroy();
+                this.charts[id] = new Chart(ctx, config);
+            }
+
+            renderTopDebtors(list) {
+                const container = document.getElementById('list-top-debtors');
+                if (!container) return;
+                const top = list.sort((a,b) => (b.balance || 0) - (a.balance || 0)).slice(0,5);
+                container.innerHTML = top.map(c => `<li style="display:flex;justify-content:space-between;">
+                    <span>${escapeHTML(c.name)}</span>
+                    <strong>${Utils.formatCurrency(c.balance || 0)}</strong>
+                </li>`).join('') || '<li style="color:var(--text-muted);">Sin deudas 🙂</li>';
+            }
+        }
+
+        const app = new App();
+        window.app = app;
+
+        document.getElementById('search-customers')?.addEventListener('input', e => app.ui.renderCustomers(e.target.value));
+        document.getElementById('search-orders')?.addEventListener('input', e => { app.orderFilter.search = e.target.value; app.ui.renderOrders(); });
+        document.getElementById('search-ingredients')?.addEventListener('input', e => app.ui.renderInventory(e.target.value));
+
+        document.addEventListener('input', e => {
+            if (e.target?.closest('#form-order')) app.ui.calculateOrderTotal();
+        });
+
+        // PWA aviso instalación
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', e => {
+            e.preventDefault();
+            deferredPrompt = e;
+            toast('Puedes instalar la app en tu móvil');
+        });
+    </script>
+</body>
+</html>
